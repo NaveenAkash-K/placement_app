@@ -1,0 +1,35 @@
+.loginPage {
+    /*height: 100vh;*/
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.formContainer {
+    background-color: white;
+    position: fixed;
+    inset: 0;
+    width: 400px;
+    border: #d0d0d0 1px solid;
+    border-radius: 8px;
+    height: fit-content;
+    margin: 20% auto auto auto;
+    padding: 1rem 1rem 3rem 1rem;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.loginText {
+    text-align: center;
+    font-size: x-large;
+    font-weight: 800;
+    /*color: #214f9c;*/
+    color: #3c4043;
+    margin: 0.5rem 0;
+}

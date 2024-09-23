@@ -1,0 +1,14 @@
+.input{
+    flex: 1;
+    display: flex;
+    width: 80%;
+    background-color: #f1f1f1;
+    border: transparent 1px solid;
+    border-radius: 3px;
+    padding: 10px 16px;
+}
+
+.input:focus{
+    outline: none;
+    border: #214f9c 1px solid;
+}

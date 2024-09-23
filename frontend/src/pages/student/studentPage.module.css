@@ -1,0 +1,20 @@
+.studentPage {
+    margin: 1rem 2rem;
+}
+
+.coursesText {
+    color: #3c4043;
+    font-weight: bold;
+    margin-left: 4rem;
+
+}
+
+.courseGrid {
+    margin: 2rem 4rem;
+    display: flex;
+    flex-wrap: wrap;
+    /*grid-template-columns: auto auto auto auto;*/
+    /*justify-content: space-around;*/
+    row-gap: 3rem;
+    column-gap: 6rem;
+}

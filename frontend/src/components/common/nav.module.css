@@ -1,0 +1,24 @@
+.nav{
+    /*width: 100%;*/
+    border-bottom: #d0d0d0 2px solid;
+    padding: 25px 25px 20px 25px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.studentNav{
+    display: flex;
+    gap: 2rem;
+}
+
+.navLinkText{
+    text-decoration: none;
+    color: #3c4043;
+}
+
+.navLinkText_active{
+    text-decoration: none;
+    font-weight: 600;
+    color: #214f9c;
+}
