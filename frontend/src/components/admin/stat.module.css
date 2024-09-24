@@ -1,0 +1,20 @@
+.statsContainer{
+    border: solid rgba(60, 64, 67, 0.46) 2px;
+    width:13rem;
+    flex-shrink: 0;
+    height: 8rem;
+    padding: 1em 1.5rem;
+    border-radius: 15px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.statTitle{
+    font-weight: 600;
+}
+
+.statValue{
+    font-weight: bolder;
+    font-size: 40px;
+    margin-top: 3px;
+    color: #214f9c;
+}

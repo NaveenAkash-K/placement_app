@@ -1,0 +1,51 @@
+.adminPage{
+    margin: 1rem 2rem;
+}
+
+.statsText{
+    color: #3c4043;
+    font-weight: bold;
+}
+
+.statsContainer{
+    margin-top: 1rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: nowrap;
+    overflow: auto;
+    scrollbar-width: none;
+}
+
+.statsContainer::-webkit-scrollbar {
+    display: none;
+}
+
+.CoursesTextAndAddCourseButtonContainer{
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.coursesText{
+    color: #3c4043;
+    font-weight: bold;
+}
+
+.addCourseButton{
+    height: fit-content;
+    border: #214f9c 2px solid;
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: #214f9c;
+    font-size: large;
+    font-weight: bold;
+    background-color: #f7f7f8;
+}
+
+.editCourseCardGrid{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+}

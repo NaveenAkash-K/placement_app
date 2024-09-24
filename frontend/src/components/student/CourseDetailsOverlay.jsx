@@ -22,7 +22,6 @@ const CourseDetailsOverlay = () => {
                             <li>Lorem Ipsum</li>
                             <li>Lorem Ipsum</li>
                             <li>Lorem Ipsum</li>
-                            <li>Lorem Ipsum</li>
                         </div>
                         <div className={styles.requirementsContainer}>
                             <h3 className={styles.requirementsTitleText}>Requirements</h3>

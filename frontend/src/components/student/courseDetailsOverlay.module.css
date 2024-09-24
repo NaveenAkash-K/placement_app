@@ -15,8 +15,10 @@
 .courseDetails {
     width: 60%;
     height: fit-content;
+    max-height: 80%;
     background-color: #f7f7f8;
     border-radius: 14px;
+    /*overflow: auto;*/
 }
 
 .imageAndDetailsContainer {
@@ -34,6 +36,8 @@
 .detailsContainer {
     margin-left: 2rem;
     width: 100%;
+    overflow: auto;
+    height: 20%;
 }
 
 .nameText {
@@ -75,6 +79,7 @@
 }
 
 .closeAndEnrollButtonContainer {
+    /*position: fixed;*/
     margin: 1rem;
     display: flex;
     gap: 1rem;

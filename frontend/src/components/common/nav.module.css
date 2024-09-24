@@ -1,24 +1,58 @@
-.nav{
+.nav {
     /*width: 100%;*/
     border-bottom: #d0d0d0 2px solid;
     padding: 25px 25px 20px 25px;
     flex-shrink: 0;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
-.studentNav{
+.studentNav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding-right: 2rem;
+    border-right: #3c4043 1px solid;
+}
+
+.navLinksAndProfileContainer {
     display: flex;
     gap: 2rem;
 }
 
-.navLinkText{
+.navLinkText {
     text-decoration: none;
     color: #3c4043;
 }
 
-.navLinkText_active{
+.navLinkText_active {
     text-decoration: none;
     font-weight: 600;
     color: #214f9c;
+}
+
+.profileAndNameContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.profile {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 100px;
+    background-color: #214f9c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: #214f9c 1px solid;
+    color: white;
+    font-weight: 600;
+    font-size: large;
+}
+
+.nameText {
+    font-weight: 500;
 }

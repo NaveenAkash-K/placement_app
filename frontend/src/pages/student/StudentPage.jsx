@@ -5,7 +5,7 @@ import CourseDetailsOverlay from "../../components/student/CourseDetailsOverlay"
 
 const StudentPage = () => {
     return <div className={styles.studentPage}>
-        <CourseDetailsOverlay/>
+        {/*<CourseDetailsOverlay/>*/}
         <h1 className={styles.coursesText}>Continue learning</h1>
         <div className={styles.courseGrid}>
             <CourseCard/>
