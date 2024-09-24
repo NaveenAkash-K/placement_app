@@ -16,6 +16,9 @@ const Nav = () => {
                 <NavLink to="/auth/login" className={({isActive}) =>
                     isActive ? styles.navLinkText_active : styles.navLinkText
                 }>Login</NavLink>
+                <NavLink to="/student/quiz" className={({isActive}) =>
+                    isActive ? styles.navLinkText_active : styles.navLinkText
+                }>Quiz</NavLink>
             </div>
             <div className={styles.profileAndNameContainer}>
                 <div className={styles.profile}>N</div>
