@@ -5,6 +5,7 @@ import styles from "./App.css"
 import Nav from "./components/common/Nav";
 import StudentPage from "./pages/student/StudentPage";
 import AdminPage from "./pages/admin/AdminPage";
+import QuizPage from "./pages/student/QuizPage";
 
 const router = createBrowserRouter([
     {
@@ -27,6 +28,13 @@ const router = createBrowserRouter([
                 element: <>
                     <Nav/>
                     <StudentPage/>
+                </>
+            },
+            {
+                path: "quiz",
+                element: <>
+                    <Nav />
+                    <QuizPage />
                 </>
             },
         ]

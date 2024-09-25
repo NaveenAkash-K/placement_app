@@ -1,3 +1,62 @@
 .quizPage{
+    color: #3C4043;
+    margin-top: 2rem;
+    margin-left: 5rem;
+    margin-right: 10rem;
+    display: flex;
+    flex-direction: column;
+}
 
+.option{
+    border: 1px solid  #3C4043;
+    padding: 10px;
+    margin: 8px;
+    border-radius: 6px;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+.option_active{
+    border: 1px solid  #214f9c;
+}
+.choose{
+    font-weight: 500;
+}
+
+.optionText{
+    font-weight: 500;
+}
+
+.timer{
+    margin-left: 2rem;
+}
+
+.time{
+    font-weight: bold;
+    color: crimson;
+}
+.questionNoContainer{
+    display: flex;
+    align-items: baseline;
+
+}
+
+.currentQuestion{
+    font-size:larger;
+    font-weight: bold;
+}
+
+.totalQuestions{
+    font-size: small;
+    color: #747678;
+}
+
+.nextButton{
+    border: 1px solid #214f9c;
+    border-radius: 20px;
+    padding: 6px 1.2rem;
+    background-color:#214f9c ;
+    color: white;
+    font-weight: 500;
+    align-self: flex-end;
 }
