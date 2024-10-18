@@ -5,13 +5,13 @@ import CourseDetailsOverlay from "../../components/student/CourseDetailsOverlay"
 
 const StudentPage = () => {
     return <div className={styles.studentPage}>
-        {/* <CourseDetailsOverlay/> */}
-        <h1 className={styles.coursesText}>Continue learning</h1>
+         {/*<CourseDetailsOverlay/>*/}
+        <h2 className={styles.coursesText}>Continue learning</h2>
         <div className={styles.courseGrid}>
             <CourseCard/>
             <CourseCard/>
         </div>
-        <h1 className={styles.coursesText}>Courses</h1>
+        <h2 className={styles.coursesText}>Courses</h2>
         <div className={styles.courseGrid}>
             <CourseCard newCourse={true}/>
             <CourseCard newCourse={true}/>

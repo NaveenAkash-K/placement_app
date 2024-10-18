@@ -7,11 +7,11 @@ const Nav = () => {
     const params = useParams();
 
     return <div className={styles.nav}>
-        <img src={svce_logo} width={100}/>
+        <img src={svce_logo} width={80}/>
         <div className={styles.navLinksAndProfileContainer}>
 
             {location.pathname.startsWith("/student") ? <div className={styles.studentNav}>
-                <NavLink to="/student/home" className={({isActive}) =>
+                <NavLink to="/student/home/1" className={({isActive}) =>
                     isActive ? styles.navLinkText_active : styles.navLinkText
                 }>My Learning</NavLink>
                 {/* <NavLink to="/auth/login" className={({isActive}) =>

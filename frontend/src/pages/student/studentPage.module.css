@@ -1,5 +1,5 @@
 .studentPage {
-    margin: 1rem 2rem;
+    margin: 1rem 0.5rem;
 }
 
 .coursesText {
@@ -9,7 +9,7 @@
 }
 
 .courseGrid {
-    margin: 2rem 4rem;
+    margin: 1rem 4rem;
     display: flex;
     flex-wrap: wrap;
     /*grid-template-columns: auto auto auto auto;*/

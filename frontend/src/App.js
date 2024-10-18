@@ -6,6 +6,8 @@ import Nav from "./components/common/Nav";
 import StudentPage from "./pages/student/StudentPage";
 import AdminPage from "./pages/admin/AdminPage";
 import QuizPage from "./pages/student/QuizPage";
+import CourseSectionsPage from "./pages/student/CourseSectionsPage";
+import CourseContentPage from "./pages/student/CourseContentPage";
 
 const router = createBrowserRouter([
     {
@@ -24,7 +26,7 @@ const router = createBrowserRouter([
         path: "/student",
         children: [
             {
-                path: "home/:id",
+                path: "home/:userId",
                 element: <>
                     <Nav/>
                     <StudentPage/>
@@ -33,10 +35,24 @@ const router = createBrowserRouter([
             {
                 path: "quiz",
                 element: <>
-                    <Nav />
-                    <QuizPage />
+                    <Nav/>
+                    <QuizPage/>
                 </>
             },
+            {
+                path: "course/:courseId/sections",
+                element: <>
+                    <Nav/>
+                    <CourseSectionsPage/>
+                </>
+            },
+            {
+                path: "course/:courseId/sections/:sectionNumber/page/:pageNo",
+                element: <>
+                    <Nav/>
+                    <CourseContentPage/>
+                </>
+            }
         ]
     },
     {
