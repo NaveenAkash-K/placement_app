@@ -1,65 +1,40 @@
 const express = require("express");
-const { MongoClient } = require('mongodb');
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 const app = express();
+const bcrypt = require("bcrypt");
+const cors = require("cors");
+const helmet = require("helmet");
+require("dotenv").config();
+// const checkAuth = require("./middleware/checkAuth");
+const path = require("path");
+const fs = require("fs");
 
-// Replace the following with your MongoDB connection string
-const url = 'mongodb+srv://NaveenAkash:09naveen@cluster0.3n8lzcq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-const dbName = 'outpass';  // Replace with your database name
-const collectionName = 'passes'; // Replace with your collection name
 
-async function updateExpiredDocumentsWithStatus(update) {
-    const client = new MongoClient(url);
-  
-    try {
-      // Connect to MongoDB
-      await client.connect();
-      console.log('Connected to the database');
-  
-      const db = client.db(dbName);
-      const collection = db.collection(collectionName);
-  
-      // Get the current date and time
-      const currentTime = new Date();
-  
-      // Find documents where 'expectedIn' is a string but represents a date in the past
-      const documents = await collection.find({
-        status: 'Used',
-        isActive: true
-      }).toArray();
+app.use(helmet());
+app.use(cors());
+app.use(bodyParser.json());
 
-      let matchedCount = 0;
-      let modifiedCount = 0;
-
-      for (let doc of documents) {
-        // Convert 'expectedIn' string to a Date object
-        const expectedInDate = new Date(doc.expectedIn);
-
-        if (expectedInDate < currentTime) {
-          // Update document if 'expectedIn' is in the past
-          const result = await collection.updateOne({ _id: doc._id }, { $set: update });
-          matchedCount += result.matchedCount;
-          modifiedCount += result.modifiedCount;
-        }
-      }
-  
-      console.log(`${matchedCount} document(s) matched the query criteria.`);
-      console.log(`${modifiedCount} document(s) were updated.`);
-    } catch (err) {
-      console.error("Error: ", err);
-    } finally {
-      await client.close();
-    }
-}
-  
-// Example usage
-app.get("/update", async (req, res) => {
-  // const update = { status: 'Used', entryScanAt:new Date().toISOString(), entryScanBy:"sec_1" }; // Fields to update
-  const update = {isActive: false }; // Fields to update
-
-  await updateExpiredDocumentsWithStatus(update);
-  res.send("Update operation completed");
+app.use("/test", (req, res) => {
+  res.json({ message: "Hello from server" });
 });
 
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
-});
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 30000,
+  })
+  .then(() => {
+    app.listen(3000, () => {
+      console.log("Server running on port 3000");
+    });
+  })
+  .catch((err) => {
+    console.error("Database connection error:", err);
+  });
+
+
+
+// app.use("/auth", authController);
