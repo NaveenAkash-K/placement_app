@@ -2,14 +2,15 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const authController = require("./controller/common/authController");
+const courseController = require("./controller/course/courseController");
+const checkAuth = require("./middleware/checkAuth");
 const app = express();
 const bcrypt = require("bcrypt");
 const cors = require("cors");
 const helmet = require("helmet");
 require("dotenv").config();
-// const checkAuth = require("./middleware/checkAuth");
 const path = require("path");
-const fs = require("fs");
 
 
 app.use(helmet());
@@ -21,20 +22,15 @@ app.use("/test", (req, res) => {
 });
 
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 30000,
-  })
-  .then(() => {
+  .connect(process.env.MONGO_URI)
+  .then(async () => {
     app.listen(3000, () => {
       console.log("Server running on port 3000");
     });
   })
   .catch((err) => {
-    console.error("Database connection error:", err);
+    console.log(err);
   });
 
-
-
-// app.use("/auth", authController);
+  app.use("/auth",authController);
+  app.use("/course",checkAuth,courseController);

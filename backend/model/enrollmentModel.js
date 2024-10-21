@@ -2,14 +2,14 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const enrollmentSchema = new Schema({
-  userId: {
+  userEmail: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: "user",  
     required: true,
   },
   courseId: {
     type: Schema.Types.ObjectId,
-    ref: "Course",
+    ref: "course",
     required: true,
   },
   intermediaryQuizMarks: {
@@ -21,7 +21,7 @@ const enrollmentSchema = new Schema({
     default: 0,
   },
   completedSections: {
-    type: [String],
+    type: [Boolean],
     default: [],
   },
   isCompleted: {
@@ -30,5 +30,5 @@ const enrollmentSchema = new Schema({
   },
 });
 
-const Enrollment = mongoose.model("Enrollment", enrollmentSchema);
-module.exports = Enrollment;
+
+module.exports = mongoose.model("enrollment",enrollmentSchema)
