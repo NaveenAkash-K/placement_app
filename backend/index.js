@@ -2,8 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const authController = require("./controller/common/authController");
+const authController = require("./controller/auth/authController");
 const courseController = require("./controller/course/courseController");
+const questionController = require('./controller/question/questionController');
+const adminController = require('./controller/admin/adminController');
 const checkAuth = require("./middleware/checkAuth");
 const app = express();
 const bcrypt = require("bcrypt");
@@ -34,3 +36,5 @@ mongoose
 
   app.use("/auth",authController);
   app.use("/course",checkAuth,courseController);
+  app.use("/quiz",questionController);
+  app.use("/admin",adminController);
