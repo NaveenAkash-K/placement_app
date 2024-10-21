@@ -9,6 +9,7 @@ import QuizPage from "./pages/student/QuizPage";
 import CourseSectionsPage from "./pages/student/CourseSectionsPage";
 import CourseContentPage from "./pages/student/CourseContentPage";
 
+
 const router = createBrowserRouter([
     {
         path: "/auth",
@@ -47,7 +48,7 @@ const router = createBrowserRouter([
                 </>
             },
             {
-                path: "course/:courseId/sections/:sectionNumber/page/:pageNo",
+                path: "course/:courseId/sections/:sectionNumber",
                 element: <>
                     <Nav/>
                     <CourseContentPage/>
