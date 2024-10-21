@@ -1,3 +1,40 @@
-.courseContentPage{
+.courseContentPage {
+    width: 60%;
+    color: #3c4043;
+    line-height: 1.6rem;
+    margin: auto auto 10rem;
+}
 
+.header {
+    margin: 1rem 0;
+    padding: 0 0 1rem 0;
+    border-bottom: 1px solid #d0d0d0;
+}
+
+.sectionTitleText {
+    font-weight: 500;
+    font-size: x-large;
+}
+
+.contentContainer{
+
+}
+
+.paragraph{
+}
+
+.heading1{
+    margin: 40px 0 10px 0;
+    font-weight: 500;
+    font-size: x-large;
+}
+
+.heading2{
+    margin: 40px 0 8px 0;
+    font-weight: 500;
+    font-size: large;
+}
+
+.bullet{
+    margin: 10px;
 }

@@ -28,11 +28,6 @@ const LoginPage = () => {
           />
           <CustomButton
             onClick={() => {
-              if ((username === "2021it0668" || username === "2021it0445") && password === "123456") {
-                navigate("/student/home/"+username);
-              }else if(username === "admin" && password === "admin"){
-                navigate("/admin/home");
-              }
             }}
             label="Submit"
           />
