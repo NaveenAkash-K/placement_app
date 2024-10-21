@@ -18,13 +18,15 @@ router.get("/:email", async (req, res) => {
     );
 
     const registeredCourseIds = enrollments.map(
-      (enrollment) => enrollment.course._id
+      (enrollment) => enrollment.course.id
     );
+
+    console.log(registeredCourseIds);
 
     const allCourses = await Course.find();
 
     const unregisteredCourses = allCourses.filter(
-      (course) => !registeredCourseIds.includes(course._id.toString())
+      (course) => !registeredCourseIds.includes(course.id)
     );
 
     res.json({
@@ -36,6 +38,40 @@ router.get("/:email", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+router.post("/register", async(req,res) => {
+  const { courseId } = req.body;
+
+  try{
+    console.log(req.body.USER_email);
+    const user = await User.findOne({ email: req.body.USER_email });
+    if(!user){
+      return res.status(404).json({message:"User not found"});
+    }
+    const course = await Course.findOne({ courseId });
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+    console.log(user);
+    console.log(course);
+
+     const enrollment = new Enrollment({
+      user: user._id,
+      course: course._id,
+      intermediaryQuizMarks: [],
+      finalQuizMarks: 0,
+      completedSections: [],
+      isCompleted: false,
+    });
+
+    await enrollment.save();
+
+    res.status(201).json({ message: "Enrollment created successfully", enrollment });
+  }catch(error){
+    console.error("Error registering course: ",error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+})
 
 
 module.exports = router;
