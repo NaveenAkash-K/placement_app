@@ -95,6 +95,7 @@
     font-size: medium;
     font-weight: 500;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .enrollButton {
@@ -106,4 +107,5 @@
     color: white;
     font-size: medium;
     font-weight: bold;
+    cursor: pointer;
 }

@@ -8,7 +8,8 @@ import AdminPage from "./pages/admin/AdminPage";
 import QuizPage from "./pages/student/QuizPage";
 import CourseSectionsPage from "./pages/student/CourseSectionsPage";
 import CourseContentPage from "./pages/student/CourseContentPage";
-
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const router = createBrowserRouter([
     {
@@ -27,7 +28,7 @@ const router = createBrowserRouter([
         path: "/student",
         children: [
             {
-                path: "home/:userId",
+                path: "home",
                 element: <>
                     <Nav/>
                     <StudentPage/>
@@ -75,6 +76,7 @@ function App() {
         <div className={styles.app}>
             {/*<Nav/>*/}
             <RouterProvider router={router}/>
+            <ToastContainer theme="dark" draggable position={"top-center"}/>
         </div>
     );
 }

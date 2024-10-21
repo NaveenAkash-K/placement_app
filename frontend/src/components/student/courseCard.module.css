@@ -6,6 +6,7 @@
     background-color: #fff;
     /*border: grey 1px solid;*/
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    cursor: pointer;
 }
 
 .courseImg{
@@ -43,7 +44,6 @@
 
 .progressBarFill{
     height: 13px;
-    width: 60%;
     border-radius: 8px;
     background-color: #214f9c;
 }
