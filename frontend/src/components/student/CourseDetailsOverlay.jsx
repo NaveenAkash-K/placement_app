@@ -50,21 +50,24 @@ const CourseDetailsOverlay = (props) => {
                 <button className={styles.closeButton} onClick={props.closeModal}>
                     Close
                 </button>
-                <button className={styles.enrollButton} onClick={async (event) => {
-                    event.preventDefault();
-                    try {
-                        setIsLoading(true);
-                        await registerCourseAPI(props.courseId);
-                        const response = await getCoursesAPI();
-                        dispatch(updateCourses(response.data));
-                        toast("Course enrolled successfully", {type:"success"});
-                        props.closeModal();
-                    } catch (e) {
-                        toast("Course enrollment failed", {type:"error"})
-                    } finally {
-                        setIsLoading(false);
-                    }
-                }}>
+                <button className={styles.enrollButton} onClick={isLoading ?
+                    () => {
+                    } :
+                    async (event) => {
+                        event.preventDefault();
+                        try {
+                            setIsLoading(true);
+                            await registerCourseAPI(props.courseId);
+                            const response = await getCoursesAPI();
+                            dispatch(updateCourses(response.data));
+                            toast("Course enrolled successfully", {type: "success"});
+                            props.closeModal();
+                        } catch (e) {
+                            toast("Course enrollment failed", {type: "error"})
+                        } finally {
+                            setIsLoading(false);
+                        }
+                    }}>
                     {isLoading ? "Loading..." : "Enroll"}
                 </button>
             </div>

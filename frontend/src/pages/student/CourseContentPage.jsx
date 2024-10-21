@@ -5,14 +5,15 @@ import courseCard from "../../components/student/CourseCard";
 
 const CourseContentPage = () => {
     const params = useParams();
-    const courseData = courseCard[params.sectionNumber-1];
+    const courseData = courseContent.filter(item => item.courseId === params.courseId)[0];
+    const sectionNumber = params.sectionNumber;
     console.log(courseData)
     return <div className={styles.courseContentPage}>
         <div className={styles.header}>
-            <h2 className={styles.sectionTitleText}>Section Title Text</h2>
+            <h2 className={styles.sectionTitleText}>{courseData.sections[sectionNumber].name}</h2>
         </div>
         <div className={styles.contentContainer}>
-            {courseData.map(item => {
+            {courseData.content[sectionNumber].map(item => {
                 for (let key in item) {
                     if (key === "heading1")
                         return <p className={styles.heading1}>{item[key]}</p>

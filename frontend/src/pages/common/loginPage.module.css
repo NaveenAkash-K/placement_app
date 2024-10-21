@@ -17,7 +17,7 @@
     border-radius: 8px;
     height: fit-content;
     margin: 20% auto auto auto;
-    padding: 0.75rem 0.75rem 2rem 0.75rem;
+    padding: 0.75rem 3rem 2rem 3rem;
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -32,4 +32,16 @@
     /*color: #214f9c;*/
     color: #3c4043;
     margin: 0.5rem 0;
+}
+
+.loginButton{
+    background-color: #214f9c;
+    color: #f7f7f8;
+    width: 100%;
+    padding: 10px 16px;
+    border-color: transparent;
+    border-radius: 3px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
 }

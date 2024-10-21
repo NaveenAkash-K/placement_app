@@ -1,7 +1,7 @@
 .input{
     flex: 1;
     display: flex;
-    width: 80%;
+    width: 100%;
     background-color: #f1f1f1;
     border: transparent 1px solid;
     border-radius: 3px;

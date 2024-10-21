@@ -18,9 +18,9 @@ const Nav = () => {
                 {/* <NavLink to="/auth/login" className={({isActive}) =>
                     isActive ? styles.navLinkText_active : styles.navLinkText
                 }>Login</NavLink> */}
-                <NavLink to="/student/quiz" className={({isActive}) =>
-                    isActive ? styles.navLinkText_active : styles.navLinkText
-                }>Quiz</NavLink>
+                {/*<NavLink to="/student/quiz" className={({isActive}) =>*/}
+                {/*    isActive ? styles.navLinkText_active : styles.navLinkText*/}
+                {/*}>Quiz</NavLink>*/}
             </div> : null}
             {location.pathname.startsWith("/admin") ? <div className={styles.adminNav}>
                 <NavLink to="/admin/home" className={({isActive}) =>

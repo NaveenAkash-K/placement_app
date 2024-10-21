@@ -1,7 +1,6 @@
 import styles from "./adminPage.module.css"
 import Stat from "../../components/admin/Stat";
 import EditCourseCard from "../../components/admin/EditCourseCard";
-import CustomButton from "../../components/common/CustomButton";
 
 const AdminPage = () => {
     return <div className={styles.adminPage}>

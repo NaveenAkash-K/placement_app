@@ -54,8 +54,8 @@ const StudentPage = () => {
                 return <CourseCard courseName={course.course.courseName}
                                    key={course.course.courseId}
                                    courseId={course.course.courseId}
-                                   completePercent={(course.completedSections.length / courseData.sections) * 100}
-                                   sections={courseData.sections}/>
+                                   completePercent={(course.completedSections.length / courseData.sections.length) * 100}
+                                   sections={courseData.sections.length}/>
             })}
         </div>
         <h2 className={styles.coursesText}>Courses</h2>
@@ -65,7 +65,7 @@ const StudentPage = () => {
                 return <CourseCard courseName={course.courseName}
                                    key={course.courseId}
                                    courseId={course.courseId}
-                                   sections={courseData.sections}
+                                   sections={courseData.sections.length}
                                    newCourse={true}/>
             })}
         </div>

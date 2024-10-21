@@ -1,7 +1,6 @@
 import styles from "./loginPage.module.css";
 import Nav from "../../components/common/Nav";
 import CustomTextInput from "../../components/common/CustomTextInput";
-import CustomButton from "../../components/common/CustomButton";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import loginAPI from "../../apis/loginAPI";
@@ -14,13 +13,14 @@ const LoginPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(localStorage.getItem("jwtToken")){
-            if(localStorage.getItem("role") === "student") navigate("/student/home")
-            if(localStorage.getItem("role") === "admin") navigate("/admin/home")
+        if (localStorage.getItem("jwtToken")) {
+            if (localStorage.getItem("role") === "student") navigate("/student/home")
+            if (localStorage.getItem("role") === "admin") navigate("/admin/home")
         }
     }, []);
     return (
@@ -38,24 +38,28 @@ const LoginPage = () => {
                         value={password}
                         onChange={setPassword}
                     />
-                    <CustomButton
-                        onClick={async () => {
-                            try {
-                                const response = await loginAPI(username, password);
-                                dispatch(updateUserDetails(response.data));
-                                toast("Authentication Successful", {type: "success"})
-                                localStorage.setItem("jwtToken", response.data.jwtToken)
-                                localStorage.setItem("role", response.data.role)
-                                localStorage.setItem("userId", response.data.userId)
-                                localStorage.setItem("username", response.data.name)
-                                localStorage.setItem("email", response.data.email)
-                                navigate("/student/home")
-                            } catch (e) {
-                                toast("Authorization Error", {type: "error"})
-                            }
-                        }}
-                        label="Submit"
-                    />
+                    <div className={styles.loginButton}
+                         onClick={isLoading ? () => {
+                         } : async () => {
+                             try {
+                                 setIsLoading(true);
+                                 const response = await loginAPI(username, password);
+                                 dispatch(updateUserDetails(response.data));
+                                 toast("Authentication Successful", {type: "success"})
+                                 localStorage.setItem("jwtToken", response.data.jwtToken)
+                                 localStorage.setItem("role", response.data.role)
+                                 localStorage.setItem("userId", response.data.userId)
+                                 localStorage.setItem("username", response.data.name)
+                                 localStorage.setItem("email", response.data.email)
+                                 navigate("/student/home")
+                             } catch (e) {
+                                 toast("Authorization Error", {type: "error"})
+                             } finally {
+                                 setIsLoading(false);
+                             }
+                         }}
+                         label="Submit"
+                    >{isLoading ? "Loading..." : "Submit"}</div>
                 </div>
             </div>
         </div>
