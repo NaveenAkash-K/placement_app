@@ -20,21 +20,24 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use("/test", (req, res) => {
-  res.json({ message: "Hello from server" });
+    res.json({message: "Hello from server"});
 });
 
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(async () => {
-    app.listen(3000, () => {
-      console.log("Server running on port 3000");
+    .connect(process.env.MONGO_URI)
+    .then(async () => {
+        app.listen(3000, () => {
+            console.log("Server running on port 3000");
+        });
+    })
+    .catch((err) => {
+        console.log(err);
     });
-  })
-  .catch((err) => {
-    console.log(err);
-  });
 
-  app.use("/auth",authController);
-  app.use("/course",checkAuth,courseController);
-  app.use("/quiz",questionController);
-  app.use("/admin",adminController);
+app.use("/auth", authController);
+app.use("/course", checkAuth, courseController);
+app.use("/quiz", questionController);
+app.use("/admin", adminController);
+app.post("/checkAuth", checkAuth, (req, res) => {
+    res.json({Authentication: "Success"});
+});

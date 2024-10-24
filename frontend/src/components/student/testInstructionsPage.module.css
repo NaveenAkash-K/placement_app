@@ -1,0 +1,56 @@
+.testInstructionsPage{
+    color: #3c4043;
+    width: 55%;
+    margin: 2rem auto 4rem auto;
+}
+
+.instructionGroup{
+    margin-bottom: 1.75rem;
+    line-height: 1.75rem;
+}
+
+.heading1{
+    font-weight: bold;
+}
+
+.heading2{
+    margin-top: 1rem;
+    font-weight: 650;
+}
+
+.listItem{
+
+}
+
+.waterMark {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none; /* Ensure it's non-interactive */
+    background-repeat: repeat;
+    background-size: 200px 200px; /* Adjust size of repeated text */
+    background-position: center;
+}
+
+.remainingTimeContainer{
+
+}
+
+.remainingTimeText{
+    font-weight: bold;
+}
+
+.startTestButton{
+    margin-top: 0.6rem;
+    border: 1px solid #214f9c;
+    border-radius: 20px;
+    padding: 1rem 3rem;
+    font-size: 16px;
+    background-color:#214f9c;
+    font-weight: bold;
+    color: white;
+    align-self: flex-end;
+}

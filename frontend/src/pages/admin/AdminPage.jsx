@@ -17,7 +17,7 @@ const AdminPage = () => {
         </div>
         <div className={styles.CoursesTextAndAddCourseButtonContainer}>
             <h1 className={styles.coursesText}>Courses</h1>
-            <button className={styles.addCourseButton}>+ Add course</button>
+            {/*<button className={styles.addCourseButton}>+ Add course</button>*/}
         </div>
         <div className={styles.editCourseCardGrid}>
             <EditCourseCard/>

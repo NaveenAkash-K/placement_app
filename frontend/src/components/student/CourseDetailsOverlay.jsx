@@ -18,8 +18,8 @@ const CourseDetailsOverlay = (props) => {
             <div className={styles.imageAndDetailsContainer}>
                 <img src={flutter_image} className={styles.courseImg}/>
                 <div className={styles.detailsContainer}>
-                    <h1 className={styles.nameText}>{courseData.courseName}</h1>
-                    <h2>{courseData.sections} Sections</h2>
+                    <h1 className={styles.nameText}>{courseData.name}</h1>
+                    <h2>{courseData.sections.length} Sections</h2>
                     <p className={styles.aboutText}>Become a Full-Stack Web Developer with just ONE course. HTML, CSS,
                         Javascript, Node, React, PostgreSQL, Web3 and DApps Bestseller</p>
                     <div className={styles.contentsAndRequirementsContainer}>

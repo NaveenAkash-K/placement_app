@@ -8,9 +8,9 @@ import {toast} from "react-toastify";
 
 const CourseSectionsPage = (props) => {
     const params = useParams();
-    const courseData = courseContent.filter(item => item.courseId === params.courseId)[0];
+    const {courseId} = params;
+    const courseData = courseContent.filter(item => item.courseId === courseId)[0];
     const completedSections = useSelector(state => state.courses.registeredCourses).filter(item => item.course.courseId === params.courseId)[0].completedSections;
-    console.log(completedSections)
     const allowedSection = completedSections.length + 1;
     const navigate = useNavigate();
 
@@ -59,6 +59,7 @@ const CourseSectionsPage = (props) => {
                                                   title={section.name}
                                                   desc={section.desc}
                                                   sectionNumber={index}
+                                                  key={index}
                                                   onClick={() => {
                                                       if (!(allowedSection > index)) {
                                                           toast("Please complete the previous sections first", {type: "warning"})

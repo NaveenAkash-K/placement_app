@@ -1,5 +1,5 @@
-import React from "react";
-import {BrowserRouter, createBrowserRouter, RouterProvider} from "react-router-dom";
+import React, {useLayoutEffect} from "react";
+import {BrowserRouter, createBrowserRouter, RouterProvider, useNavigate} from "react-router-dom";
 import LoginPage from "./pages/common/LoginPage";
 import styles from "./App.css"
 import Nav from "./components/common/Nav";
@@ -10,6 +10,8 @@ import CourseSectionsPage from "./pages/student/CourseSectionsPage";
 import CourseContentPage from "./pages/student/CourseContentPage";
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import checkAuthAPI from "./apis/checkAuthAPI";
+import TestInstructionsPage from "./components/student/TestInstructionsPage";
 
 const router = createBrowserRouter([
     {
@@ -32,13 +34,20 @@ const router = createBrowserRouter([
                 element: <>
                     <Nav/>
                     <StudentPage/>
-                </>
+                </>,
             },
             {
                 path: "quiz",
                 element: <>
                     <Nav/>
                     <QuizPage/>
+                </>
+            },
+            {
+                path: "quiz/instructions",
+                element: <>
+                    <Nav/>
+                    <TestInstructionsPage/>
                 </>
             },
             {
@@ -72,9 +81,17 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+    useLayoutEffect(() => {
+        checkAuthAPI().then().catch(error => {
+            console.log(error)
+            toast("Session Expired! Please login again", {type: "warning"});
+            localStorage.clear();
+            router.navigate("/auth/login");
+        })
+    }, []);
+
     return (
         <div className={styles.app}>
-            {/*<Nav/>*/}
             <RouterProvider router={router}/>
             <ToastContainer theme="dark" draggable position={"top-center"}/>
         </div>
