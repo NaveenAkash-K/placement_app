@@ -5,12 +5,14 @@ import {courseContent} from "../../data/courseContent";
 import {useNavigate, useParams} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
+import {useEffect, useLayoutEffect, useState} from "react";
 
 const CourseSectionsPage = (props) => {
     const params = useParams();
     const {courseId} = params;
     const courseData = courseContent.filter(item => item.courseId === courseId)[0];
-    const completedSections = useSelector(state => state.courses.registeredCourses).filter(item => item.course.courseId === params.courseId)[0].completedSections;
+    const registeredCourses = useSelector(state => state.courses.registeredCourses)
+    const completedSections = registeredCourses.filter(item => item.course.courseId === params.courseId)[0].completedSections;
     const allowedSection = completedSections.length + 1;
     const navigate = useNavigate();
 
@@ -65,7 +67,7 @@ const CourseSectionsPage = (props) => {
                                                           toast("Please complete the previous sections first", {type: "warning"})
                                                           return;
                                                       }
-                                                      navigate("/student/quiz");
+                                                      navigate("/student/quiz/instructions");
                                                   }}
                         />
                     else if (section.type === "final quiz")

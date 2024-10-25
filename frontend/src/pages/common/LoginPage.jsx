@@ -22,7 +22,35 @@ const LoginPage = () => {
             if (localStorage.getItem("role") === "student") navigate("/student/home")
             if (localStorage.getItem("role") === "admin") navigate("/admin/home")
         }
-    }, []);
+        const captureEnterKey = (event) => {
+            if (event.key === "Enter") {
+                authenticate();
+            }
+        }
+        document.addEventListener("keydown", captureEnterKey);
+        return () => {
+            document.removeEventListener("keydown", captureEnterKey);
+        };
+    }, [username, password]);
+
+    const authenticate = async () => {
+        try {
+            setIsLoading(true);
+            const response = await loginAPI(username, password);
+            dispatch(updateUserDetails(response.data));
+            toast("Authentication Successful", {type: "success"})
+            localStorage.setItem("jwtToken", response.data.jwtToken)
+            localStorage.setItem("role", response.data.role)
+            localStorage.setItem("userId", response.data.userId)
+            localStorage.setItem("username", response.data.name)
+            localStorage.setItem("email", response.data.email)
+            navigate("/student/home")
+        } catch (e) {
+            toast("Authentication Error", {type: "error"})
+        } finally {
+            setIsLoading(false);
+        }
+    }
     return (
         <div className={styles.loginPage}>
             <div className={styles.content}>
@@ -40,24 +68,7 @@ const LoginPage = () => {
                     />
                     <div className={styles.loginButton}
                          onClick={isLoading ? () => {
-                         } : async () => {
-                             try {
-                                 setIsLoading(true);
-                                 const response = await loginAPI(username, password);
-                                 dispatch(updateUserDetails(response.data));
-                                 toast("Authentication Successful", {type: "success"})
-                                 localStorage.setItem("jwtToken", response.data.jwtToken)
-                                 localStorage.setItem("role", response.data.role)
-                                 localStorage.setItem("userId", response.data.userId)
-                                 localStorage.setItem("username", response.data.name)
-                                 localStorage.setItem("email", response.data.email)
-                                 navigate("/student/home")
-                             } catch (e) {
-                                 toast("Authorization Error", {type: "error"})
-                             } finally {
-                                 setIsLoading(false);
-                             }
-                         }}
+                         } : authenticate}
                          label="Submit"
                     >{isLoading ? "Loading..." : "Submit"}</div>
                 </div>

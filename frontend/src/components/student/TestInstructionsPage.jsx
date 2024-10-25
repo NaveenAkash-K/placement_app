@@ -1,6 +1,7 @@
 import styles from "./testInstructionsPage.module.css"
 import {useSelector} from "react-redux";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 const TestInstructionsPage = () => {
     const watermarkText = "2021IT0668"; // You can make this dynamic if needed
@@ -32,6 +33,8 @@ const TestInstructionsPage = () => {
         };
     }, [watermarkText]);
 
+    const navigate = useNavigate();
+
     const goFullScreen = () => {
         const element = document.documentElement;
         if (element.requestFullscreen) {
@@ -45,49 +48,13 @@ const TestInstructionsPage = () => {
         }
     };
 
-    useEffect(() => {
-        const handleWindowFocus = () => {
-            console.log("Focus regained");
-        };
-
-        const handleWindowBlur = () => {
-            alert("Warning: Do not switch tabs or windows during the test!");
-            console.log("Tab/Window switched");
-        };
-
-        const disableRightClick = (e) => e.preventDefault();
-        const disableKeyShortcuts = (e) => {
-            if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'I' || e.key === 'S' || e.key === 'U')) {
-                e.preventDefault();
-            }
-
-            if (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's' || e.key === 'i')) {
-                e.preventDefault();
-            }
-
-            // Disable F12 (used to open Developer Tools)
-            if (e.key === 'F12') {
-                e.preventDefault();
-            }
-        };
-
-        // Attach event listeners
-        window.addEventListener("blur", handleWindowBlur);
-        window.addEventListener("focus", handleWindowFocus);
-        window.addEventListener("contextmenu", disableRightClick); // Disable right-click
-        document.addEventListener("keydown", disableKeyShortcuts); // Disable Ctrl+C, Ctrl+U, Ctrl+S, and Ctrl+I (common shortcuts)
-
-        // Cleanup event listeners on component unmount
-        return () => {
-            window.removeEventListener("blur", handleWindowBlur);
-            window.removeEventListener("focus", handleWindowFocus);
-            window.removeEventListener("contextmenu", disableRightClick);
-            document.removeEventListener("keydown", disableKeyShortcuts);
-        };
-    }, []);
+    const startTest = () => {
+        goFullScreen();
+        navigate("/student/quiz")
+    }
 
     return <div className={styles.testInstructionsPage}>
-        <div className={styles.waterMark} style={{}}/>
+        <div className={styles.waterMark}/>
         <section className={styles.instructionGroup}>
             <h2 className={styles.heading1}>Test Instructions & Guidelines</h2>
             <p>Hi {localStorage.getItem("username")}. Please read the following instructions carefully before beginning
@@ -180,6 +147,33 @@ const TestInstructionsPage = () => {
             <li className={styles.listItem}>Reporting to university authorities for further action</li>
         </section>
         <section className={styles.instructionGroup}>
+            <h3 className={styles.heading2}>Prepare Your Device</h3>
+            <p>Before starting the test, please follow these steps to avoid interruptions:</p>
+            <li className={styles.listItem}>
+                <strong style={{fontWeight: 600}}>Close Unnecessary Applications:</strong> Close any background
+                applications (like messaging apps, video players, or social media platforms) to prevent distractions and
+                improve device performance.
+            </li>
+            <li className={styles.listItem}>
+                <strong style={{fontWeight: 600}}>Disable VPN or Proxy Services:</strong> Ensure that any VPN, proxy, or
+                similar network service is turned off, as it may cause connectivity issues and could trigger security
+                flags during the test.
+            </li>
+            <li className={styles.listItem}>
+                <strong style={{fontWeight: 600}}>Block Notifications:</strong> Enable "Do Not Disturb" mode or turn off
+                notifications on your device to avoid pop-ups that may cause distractions or cover important test
+                content.
+            </li>
+            <li className={styles.listItem}>
+                <strong style={{fontWeight: 600}}>Maintain Full Battery:</strong> Ensure your device is fully charged or
+                plugged into a power source, as losing power during the test could result in incomplete submissions.
+            </li>
+            <li className={styles.listItem}>
+                <strong style={{fontWeight: 600}}>Set to Full-Screen Mode:</strong> The test will run in full-screen
+                mode to improve focus. Any attempt to exit this mode may impact your ability to complete the test.
+            </li>
+        </section>
+        <section className={styles.instructionGroup}>
             <h2 className={styles.heading1}>By proceeding with the test, you agree to adhere to the above rules and
                 conduct the test with honesty
                 and
@@ -189,7 +183,7 @@ const TestInstructionsPage = () => {
         <div className={styles.remainingTimeContainer}>
             You can start test in: <strong className={styles.remainingTimeText}>00:45</strong>
         </div>
-        <button onClick={goFullScreen} className={styles.startTestButton}>Start Test</button>
+        <button onClick={startTest} className={styles.startTestButton}>Start Test</button>
     </div>
 }
 

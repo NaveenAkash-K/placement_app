@@ -1,0 +1,115 @@
+.testResultPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: #3c4043;
+}
+
+    /* Passing background */
+.passBackground {
+    background: linear-gradient(135deg, #e3ffe7, #d9e7ff);
+}
+
+/* Failing background */
+.failBackground {
+    background: linear-gradient(135deg, #fff3f3, #d9e7ff);
+}
+
+.resultHeader {
+    padding: 2rem 3rem;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.passHeader {
+    background: #f1f8ff;
+}
+
+.failHeader {
+    background: #f1f8ff;
+}
+
+.icon {
+    color: #4caf50;
+    animation: bounce 1s ease infinite alternate;
+}
+
+.failHeader .icon {
+    color: #e74c3c;
+}
+
+@keyframes bounce {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-10px);
+    }
+}
+
+.textDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.courseTitleText {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.congratsText {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1e88e5;
+    margin: 0.5rem 0;
+}
+
+.successText {
+    font-size: 1.2rem;
+    color: #555;
+}
+
+.content {
+    background: #f1f8ff;
+    padding: 1.5rem 2rem;
+    border-radius: 15px;
+    box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    max-width: 600px;
+}
+
+.scoreText {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 1rem 0;
+}
+
+.passScore {
+    color: #4caf50;
+}
+
+.failScore {
+    color: #e74c3c;
+}
+
+.encouragementText {
+    font-size: 1rem;
+    color: #888;
+    text-align: center;
+    max-width: 500px;
+}

@@ -24,7 +24,6 @@
 
 .detailsContainer {
     margin-top: 1rem;
-    margin-left: 2rem;
     width: 100%;
     /*overflow: auto;*/
     height: 20%;
@@ -43,7 +42,7 @@
 .contentsAndRequirementsContainer {
     margin-top: 1rem;
     display: flex;
-    justify-content: flex-end;
+    /*justify-content: flex-end;*/
 }
 
 .contentsContainer {

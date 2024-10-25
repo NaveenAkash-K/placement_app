@@ -1,5 +1,5 @@
 import React, {useLayoutEffect} from "react";
-import {BrowserRouter, createBrowserRouter, RouterProvider, useNavigate} from "react-router-dom";
+import {BrowserRouter, createBrowserRouter, RouterProvider, useLocation, useNavigate} from "react-router-dom";
 import LoginPage from "./pages/common/LoginPage";
 import styles from "./App.css"
 import Nav from "./components/common/Nav";
@@ -12,6 +12,7 @@ import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import checkAuthAPI from "./apis/checkAuthAPI";
 import TestInstructionsPage from "./components/student/TestInstructionsPage";
+import TestResultPage from "./components/student/TestResultPage";
 
 const router = createBrowserRouter([
     {
@@ -39,7 +40,6 @@ const router = createBrowserRouter([
             {
                 path: "quiz",
                 element: <>
-                    <Nav/>
                     <QuizPage/>
                 </>
             },
@@ -48,6 +48,13 @@ const router = createBrowserRouter([
                 element: <>
                     <Nav/>
                     <TestInstructionsPage/>
+                </>
+            },
+            {
+                path: "quiz/result",
+                element: <>
+                    <Nav/>
+                    <TestResultPage/>
                 </>
             },
             {
@@ -82,12 +89,17 @@ const router = createBrowserRouter([
 
 function App() {
     useLayoutEffect(() => {
-        checkAuthAPI().then().catch(error => {
-            console.log(error)
-            toast("Session Expired! Please login again", {type: "warning"});
-            localStorage.clear();
-            router.navigate("/auth/login");
-        })
+        if (localStorage.getItem("jwtToken")) {
+            checkAuthAPI().then().catch(error => {
+                toast("Session Expired! Please login again", {type: "warning"});
+                localStorage.clear();
+                router.navigate("/auth/login");
+            })
+        }
+    }, []);
+
+    useLayoutEffect(() => {
+        if (router.state.location.pathname === "/") router.navigate("/auth/login");
     }, []);
 
     return (

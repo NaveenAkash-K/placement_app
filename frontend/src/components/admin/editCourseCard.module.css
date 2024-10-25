@@ -1,11 +1,12 @@
 .courseCard{
-    width: 300px;
-    padding: 15px;
+    width: 275px;
+    padding: 15px 15px 10px 15px;
     border-radius: 14px;
     overflow: hidden;
     background-color: #fff;
     /*border: grey 1px solid;*/
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    cursor: pointer;
 }
 
 .courseImg{
@@ -21,4 +22,28 @@
 
 .courseTitleText{
     font-weight: 600;
+}
+
+.progressBarContainer{
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.progressPercentText{
+    font-weight: 500;
+}
+
+.progressBarBackground{
+    margin-left: 1rem;
+    height: 13px;
+    width: 100%;
+    background-color: #e3e3e3;
+    border-radius: 8px;
+}
+
+.progressBarFill{
+    height: 13px;
+    border-radius: 8px;
+    background-color: #214f9c;
 }

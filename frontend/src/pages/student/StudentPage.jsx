@@ -2,10 +2,10 @@ import styles from "./studentPage.module.css"
 import CourseCard from "../../components/student/CourseCard";
 import Nav from "../../components/common/Nav";
 import CourseDetailsOverlay from "../../components/student/CourseDetailsOverlay";
-import {useEffect, useState} from "react";
+import {useEffect, useLayoutEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {updateCourses} from "../../store/CoursesSlice";
+import {updateCourses} from "../../store/coursesSlice";
 import getCoursesAPI from "../../apis/getCoursesAPI";
 import {courseContent} from "../../data/courseContent";
 
@@ -16,11 +16,15 @@ const StudentPage = () => {
     const [isLoading, setIsLoading] = useState(false)
     const registeredCourses = useSelector(state => state.courses.registeredCourses)
     const unregisteredCourses = useSelector(state => state.courses.unregisteredCourses)
-    useEffect(() => {
+
+    useLayoutEffect(() => {
         if (!localStorage.getItem("jwtToken")) {
             navigate("/auth/login");
             return;
         }
+    }, []);
+
+    useEffect(() => {
 
         const fetchCourses = async () => {
             setIsLoading(true);

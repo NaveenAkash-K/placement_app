@@ -19,6 +19,29 @@
 .navLinksAndProfileContainer {
     display: flex;
     gap: 2rem;
+    position: relative;
+}
+
+.dropdownContainer {
+    top: 3.2rem;
+    position: absolute;
+    border-radius: 10px;
+    border: 1px #d0d0d0 solid;
+}
+
+.logoutButton {
+    border-radius: 10px;
+    padding: 10px 20px;
+    background-color: #f7f7f8;
+    cursor: pointer;
+    gap: 0.5rem;
+    display: flex;
+    align-items: center;
+    font-size: 16px
+}
+
+.logoutButton:hover {
+    /*background-color: #eaeaea;*/
 }
 
 .navLinkText {
@@ -36,6 +59,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
     gap: 1rem;
 }
 

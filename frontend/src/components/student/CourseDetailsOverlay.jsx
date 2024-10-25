@@ -5,7 +5,7 @@ import {useState} from "react";
 import registerCourseAPI from "../../apis/registerCourseAPI";
 import getCoursesAPI from "../../apis/getCoursesAPI";
 import {useDispatch} from "react-redux";
-import {updateCourses} from "../../store/CoursesSlice";
+import {updateCourses} from "../../store/coursesSlice";
 import {toast} from "react-toastify";
 
 const CourseDetailsOverlay = (props) => {

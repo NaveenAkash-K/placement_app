@@ -1,12 +1,25 @@
 import styles from "./nav.module.css";
 import svce_logo from "../../assets/logos/svce.png"
-import {NavLink, useLocation, useParams} from "react-router-dom";
-import {useSelector} from "react-redux";
+import {NavLink, useLocation, useNavigate, useParams} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {IoMdLogOut} from "react-icons/io";
+import {useState} from "react";
+import {clearAuthDetails} from "../../store/authSlice";
+
 
 const Nav = () => {
     const location = useLocation();
     const params = useParams();
     const authState = useSelector(state => state.auth);
+    const [isDropdownVisible, setIsDropdownVisible] = useState(false)
+    const dispatch = useDispatch()
+    const navigate = useNavigate();
+
+    const logout = () => {
+        dispatch(clearAuthDetails());
+        localStorage.clear();
+        navigate("/auth/login");
+    }
 
     return <div className={styles.nav}>
         <img src={svce_logo} width={80}/>
@@ -27,10 +40,18 @@ const Nav = () => {
                     isActive ? styles.navLinkText_active : styles.navLinkText
                 }>Home</NavLink>
             </div> : null}
-            {location.pathname.startsWith("/student") ? <div className={styles.profileAndNameContainer}>
-                <div className={styles.profile}>{localStorage.getItem("username")[0]}</div>
-                <p className={styles.nameText}> {localStorage.getItem("username")}</p>
-            </div> : null}
+            {location.pathname.startsWith("/student") ?
+                <div className={styles.profileAndNameContainer}
+                     onClick={() => setIsDropdownVisible(prev => !prev)}>
+                    {isDropdownVisible && <div className={styles.dropdownContainer}>
+                        <div className={styles.logoutButton} onClick={logout}>
+                            <IoMdLogOut size={20}/>
+                            <p>Logout</p>
+                        </div>
+                    </div>}
+                    <div className={styles.profile}>{localStorage.getItem("username")[0]}</div>
+                    <p className={styles.nameText}> {localStorage.getItem("username")}</p>
+                </div> : null}
             {location.pathname.startsWith("/admin") ? <div className={styles.profileAndNameContainer}>
                 <div className={styles.profile}>{localStorage.getItem("username")[0]}</div>
                 <p className={styles.nameText}>{localStorage.getItem("username")}</p>

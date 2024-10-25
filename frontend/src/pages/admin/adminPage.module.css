@@ -1,26 +1,58 @@
-.adminPage{
+.adminPage {
     margin: 1rem 2rem;
 }
 
-.statsText{
+.statsText {
     color: #3c4043;
     font-weight: bold;
 }
 
-.statsContainer{
+.statsContainer {
+    padding: 2rem;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border-radius: 10px;
+    background-color: white;
     margin-top: 1rem;
     display: flex;
     gap: 2rem;
-    flex-wrap: nowrap;
-    overflow: auto;
-    scrollbar-width: none;
+}
+
+.textStatsContainer {
+}
+
+.chartsContainer {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.chartContainer {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chartTitle{
+    font-weight: 600;
+}
+
+.textStatTitle {
+    font-weight: 600;
+    text-wrap: nowrap;
+}
+
+.textStatValue {
+    font-weight: bold;
+    color: #214f9c;
+
 }
 
 .statsContainer::-webkit-scrollbar {
     display: none;
 }
 
-.CoursesTextAndAddCourseButtonContainer{
+.CoursesTextAndAddCourseButtonContainer {
     margin-top: 2rem;
     margin-bottom: 2rem;
     display: flex;
@@ -28,12 +60,12 @@
     gap: 2rem;
 }
 
-.coursesText{
+.coursesText {
     color: #3c4043;
     font-weight: bold;
 }
 
-.addCourseButton{
+.addCourseButton {
     height: fit-content;
     border: #214f9c 2px solid;
     border-radius: 8px;
@@ -44,7 +76,7 @@
     background-color: #f7f7f8;
 }
 
-.editCourseCardGrid{
+.editCourseCardGrid {
     display: flex;
     flex-wrap: wrap;
     gap: 3rem;
