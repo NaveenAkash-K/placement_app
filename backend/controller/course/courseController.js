@@ -1,4 +1,6 @@
 const express = require("express");
+const mongoose = require("mongoose")
+const { ObjectId } = mongoose.Types
 const router = express.Router();
 const Course = require("../../model/courseModel");
 const Enrollment = require("../../model/enrollmentModel");
@@ -73,5 +75,49 @@ router.post("/register", async(req,res) => {
   }
 })
 
+router.delete("/enrollments", async (req, res) => {
+  try {
+    const result = await Enrollment.deleteMany({});
+    res.json({
+      message: `${result.deletedCount} enrollments deleted successfully.`,
+    });
+  } catch (error) {
+    console.error("Error deleting enrollments:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+router.patch("/enrollments", async (req, res) => {
+  const { courseId, sectionId, userId } = req.body;
+
+  try {
+    if (!ObjectId.isValid(courseId) || !ObjectId.isValid(userId)) {
+      return res.status(404).json("Invalid ObjectId");
+    }
+
+    const enrollment = await Enrollment.findOneAndUpdate(
+      {
+        course: new ObjectId(courseId),
+        user: new ObjectId(userId),
+      },
+      {
+        $set: { [`completedSections.${sectionId - 1}`]: true }, 
+      },
+      { new: true }
+    );
+
+    if (!enrollment) {
+      return res.status(404).json({ message: "Enrollment not found." });
+    }
+
+    res.json({
+      message: "Section marked as completed successfully.",
+      enrollment,
+    });
+  } catch (error) {
+    console.error("Error updating completed sections:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 module.exports = router;
