@@ -36,9 +36,12 @@ function generateFingerprint(req) {
 }
 
 router.post("/new-questions", async (req, res) => {
-  const { courseId, sectionNo, userId, n } = req.body;
+  const { courseId, sectionNo, userId } = req.body;
 
   try {
+    const course = await Course.findOne({ courseId });
+    const quiz = course.quiz.find((q) => q.sectionNo === sectionNo);
+    const n = quiz.noOfQuestions;
     const activeSession = await Session.findOne({
       userId: userId,
       courseId: courseId,
