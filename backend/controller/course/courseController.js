@@ -101,10 +101,18 @@ router.patch("/enrollments", async (req, res) => {
         user: new ObjectId(userId),
       },
       {
-        $set: { [`completedSections.${sectionId - 1}`]: true }, 
+        $set: { [`completedSections.${sectionId - 1}`]: true },
       },
       { new: true }
-    );
+    ); 
+    // if (enrollment.completedSections.length <= sectionId) {
+    //   const fillArray = Array(
+    //     sectionId - enrollment.completedSections.length + 1
+    //   ).fill(false);
+    //   enrollment.completedSections.push(...fillArray);
+    // }
+
+    // await enrollment.save();
 
     if (!enrollment) {
       return res.status(404).json({ message: "Enrollment not found." });

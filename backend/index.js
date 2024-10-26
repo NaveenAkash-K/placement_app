@@ -6,6 +6,7 @@ const authController = require("./controller/auth/authController");
 const courseController = require("./controller/course/courseController");
 const questionController = require('./controller/question/questionController');
 const adminController = require('./controller/admin/adminController');
+const Session = require("./model/sessionModel");
 const checkAuth = require("./middleware/checkAuth");
 const app = express();
 const bcrypt = require("bcrypt");
@@ -22,6 +23,23 @@ app.use(bodyParser.json());
 app.use("/test", (req, res) => {
     res.json({message: "Hello from server"});
 });
+
+async function checkSessionExpiry() {
+  const now = new Date();
+  console.log("Expired session cleanup function called");
+  try {
+    const expiredSessions = await Session.updateMany(
+      { expiryTime: { $lt: now }, isExpired: false },
+      { $set: { isExpired: true } }
+    );
+
+    console.log(`Updated expired sessions: ${expiredSessions.modifiedCount}`);
+  } catch (error) {
+    console.error("Error updating expired sessions:", error);
+  }
+}
+// TODO: move the time to env
+setInterval(checkSessionExpiry,  0.5 * 60 * 1000);
 
 mongoose
     .connect(process.env.MONGO_URI)
