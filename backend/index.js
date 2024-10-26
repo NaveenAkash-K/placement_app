@@ -35,7 +35,7 @@ mongoose
     });
 
 app.use("/auth", authController);
-app.use("/course", checkAuth, courseController);
+app.use("/course", courseController);
 app.use("/quiz", questionController);
 app.use("/admin", adminController);
 app.post("/checkAuth", checkAuth, (req, res) => {
