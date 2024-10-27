@@ -26,6 +26,10 @@ const questionSchema = new Schema({
     type: [String],
     required: true,
   },
+  time: {
+    type: Number,
+    required: true,
+  },
   isCheckBox: {
     type: Boolean,
     required: true,

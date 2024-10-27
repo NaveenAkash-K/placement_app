@@ -16,16 +16,18 @@ const sessionSchema = new Schema({
     required: true,
   },
   sectionNo: {
-    type: String,
+    type: Number,
     required: true,
   },
   questions: [
     {
-        questionId: {
-            type: String,
+        question: {
+            type: Schema.Types.ObjectId,
+            ref:"question",
             required: true,
         },
-        isCorrect: Boolean,
+        userAnswer: [String],
+        isCorrect: Boolean
     }
   ],
   startTime: {
@@ -40,14 +42,11 @@ const sessionSchema = new Schema({
     type: Boolean,
     default: false,
   },
-  hasAttempted: {
-    type: Boolean,
-    default: false,
-  },
   ip: {
     type: String,
+    required: true,
   },
-  noOfTabSwitches: {
+  tabSwitchCount: {
     type: Number,
     default: 0,
     min: 0,

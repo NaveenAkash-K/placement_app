@@ -11,6 +11,14 @@ const courseSchema = new Schema({
     type: String,
     required: true,
   },
+  quiz: [
+    {
+      sectionNo: Number,
+      cutOff: Number,
+      noOfQuestions: Number,
+      isCompleted: Boolean
+    }
+  ]
 });
 
 module.exports = mongoose.model("course", courseSchema);
