@@ -8,6 +8,7 @@ const Question = require("../../model/questionModel");
 const Session = require("../../model/sessionModel");
 const Course = require("../../model/courseModel");
 const { validate } = require("../../model/courseModel");
+const { log } = require("console");
 
 const shuffleArray = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -50,7 +51,12 @@ router.post("/new-questions", async (req, res) => {
     });
 
     if (activeSession) {
-      return res.json(activeSession);
+      return res.json({
+        ...activeSession._doc,
+        session: {
+          sessionId: activeSession.sessionId,
+        },
+      });
     }
 
     const previousSessions = await Session.find({
@@ -133,7 +139,7 @@ router.post("/fetch-question", async (req, res) => {
       return res.status(404).json({ message: "Session not found or expired." });
     }
 
-    const question = await Question.findOne({questionId});
+    const question = await Question.findById(questionId);
     if (!question) {
       return res.status(404).json({ message: "Question not found." });
     }
@@ -142,8 +148,10 @@ router.post("/fetch-question", async (req, res) => {
 
     res.json({
       question: {
-        ...question._doc,
+        question: question.question,
+        isCheckBox: question.isCheckBox,
         options: shuffledOptions,
+        time: question.time,
       },
       message: "Question fetched successfully.",
     });
@@ -161,11 +169,14 @@ router.post("/update-answer", async (req, res) => {
     if (!question) {
       return res.status(404).json({ message: "Question not found." });
     }
+
     const isCorrect = validateAnswer(userAnswer, question.answer);
+    console.log(question+" : "+ isCorrect);
+    console.log(question._id);
     const session = await Session.findOneAndUpdate(
       {
         sessionId: sessionId,
-        "questions.questionId": new ObjectId(questionId),
+        "questions.question": question._id,
       },
       {
         $set: {
@@ -175,14 +186,14 @@ router.post("/update-answer", async (req, res) => {
       },
       { new: true }
     );
-
+    console.log(session);
     if (!session) {
       return res
         .status(404)
         .json({ message: "Session or question not found." });
     }
 
-    res.json({ message: "Answer updated successfully", isCorrect: isCorrect });
+    res.json({ message: "Answer updated successfully" });
   } catch (error) {
     console.error("Error updating answer correctness:", error);
     res.status(500).json({ message: "Internal Server Error" });

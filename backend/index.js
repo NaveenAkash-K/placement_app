@@ -28,8 +28,10 @@ async function checkSessionExpiry() {
   const now = new Date();
   console.log("Expired session cleanup function called");
   try {
+    const timestamp = Date.now();
+    const isoString = new Date(timestamp).toISOString();
     const expiredSessions = await Session.updateMany(
-      { expiryTime: { $lt: now }, isExpired: false },
+      { expiryTime: { $lt: isoString }, isExpired: false },
       { $set: { isExpired: true } }
     );
 
