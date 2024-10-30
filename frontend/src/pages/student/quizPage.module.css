@@ -5,6 +5,60 @@
     position: relative;
 }
 
+.tabSwitchBackdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.tabSwitchContent {
+    width: 28rem;
+    /*height: 16rem;*/
+    height: max-content;
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 2px solid #FF6B6B;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.tabSwitchTitle {
+    font-size: 1.5rem;
+    color: #FF6B6B;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.tabSwitchMessage {
+    font-size: 1rem;
+    color: #333333;
+    margin-bottom: 0.5rem;
+}
+
+.tabSwitchButton {
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    background-color: #FF6B6B;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.tabSwitchButton:hover {
+    background-color: #ff5252;
+}
+
 .waterMark {
     position: fixed;
     top: 0;
@@ -60,9 +114,18 @@
 }
 
 
+.attended {
+    background-color: #fff07a;
+    border-color: #ffe200;
+}
+
 .completed {
     background-color: #a6ffa6;
     border-color: #00ff00;
+}
+
+.questionSelector_active {
+    border: #214f9c 2px solid;
 }
 
 .pageContent {
@@ -75,11 +138,11 @@
     justify-content: stretch;
 }
 
-.loadQuestionContainer{
+.loadQuestionContainer {
 
 }
 
-.loadQuestionButton{
+.loadQuestionButton {
     cursor: pointer;
     margin-top: 1rem;
     border: 1px solid #214f9c;

@@ -20,7 +20,7 @@ const store = configureStore({
     reducer: {
         courses: persistedCoursesReducer,
         auth: persistedAuthReducer,
-        quizReducer: persistedQuizReducer,
+        quiz: persistedQuizReducer,
     },
 });
 

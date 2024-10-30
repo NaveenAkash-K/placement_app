@@ -1,10 +1,13 @@
 import styles from "./testInstructionsPage.module.css"
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import registerSessionAPI from "../../apis/registerSessionAPI";
+import {initializeQuestions, updateSelectedQuestion} from "../../store/quizSlice";
 
 const TestInstructionsPage = () => {
     const watermarkText = "2021IT0668"; // You can make this dynamic if needed
+    const dispatch = useDispatch();
 
     useEffect(() => {
         // Inject the dynamic watermark content into a style tag
@@ -48,8 +51,12 @@ const TestInstructionsPage = () => {
         }
     };
 
-    const startTest = () => {
+    const startTest = async () => {
         goFullScreen();
+        const response = await registerSessionAPI("CS101", 1);
+        localStorage.setItem("sessionId", response.data.session.sessionId)
+        dispatch(initializeQuestions(response.data.questions))
+        dispatch(updateSelectedQuestion(0))
         navigate("/student/quiz")
     }
 
