@@ -1,13 +1,31 @@
 import styles from "./testInstructionsPage.module.css"
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import registerSessionAPI from "../../apis/registerSessionAPI";
 import {initializeQuestions, updateSelectedQuestion} from "../../store/quizSlice";
+import formatTimer from "../../utils/formatTimer";
+import goFullScreen from "../../utils/goFullscreen";
 
 const TestInstructionsPage = () => {
     const watermarkText = "2021IT0668"; // You can make this dynamic if needed
     const dispatch = useDispatch();
+    const [timer, setTimer] = useState(5);
+    const [canStartTest, setCanStartTest] = useState(false);
+    const intervalId = useRef(null);
+
+    useEffect(() => {
+        if (timer === 0) {
+            clearInterval(intervalId.current)
+            setCanStartTest(true);
+        }
+    }, [timer])
+
+    useEffect(() => {
+        intervalId.current = setInterval(() => {
+            setTimer(prev => prev - 1);
+        }, 1000)
+    }, [])
 
     useEffect(() => {
         // Inject the dynamic watermark content into a style tag
@@ -37,19 +55,6 @@ const TestInstructionsPage = () => {
     }, [watermarkText]);
 
     const navigate = useNavigate();
-
-    const goFullScreen = () => {
-        const element = document.documentElement;
-        if (element.requestFullscreen) {
-            element.requestFullscreen();
-        } else if (element.mozRequestFullScreen) {
-            element.mozRequestFullScreen();
-        } else if (element.webkitRequestFullscreen) {
-            element.webkitRequestFullscreen();
-        } else if (element.msRequestFullscreen) {
-            element.msRequestFullscreen();
-        }
-    };
 
     const startTest = async () => {
         goFullScreen();
@@ -188,9 +193,12 @@ const TestInstructionsPage = () => {
             <p>Good luck, and do your best!</p>
         </section>
         <div className={styles.remainingTimeContainer}>
-            You can start test in: <strong className={styles.remainingTimeText}>00:45</strong>
+            You can start test in: <strong className={styles.remainingTimeText}>{formatTimer(timer)}</strong>
         </div>
-        <button onClick={startTest} className={styles.startTestButton}>Start Test</button>
+        <button onClick={canStartTest ? startTest : null}
+                style={canStartTest ? {} : {cursor:"default"}}
+                className={`${styles.startTestButton} ${!canStartTest ? styles.disabled : ""}`}>Start Test
+        </button>
     </div>
 }
 

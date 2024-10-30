@@ -1,4 +1,4 @@
-.testInstructionsPage{
+.testInstructionsPage {
     color: #3c4043;
     width: 55%;
     margin: 2rem auto 4rem auto;
@@ -17,40 +17,47 @@
     background-position: center;
 }
 
-.instructionGroup{
+.instructionGroup {
     margin-bottom: 1.75rem;
     line-height: 1.75rem;
 }
 
-.heading1{
+.heading1 {
     font-weight: bold;
 }
 
-.heading2{
+.heading2 {
     margin-top: 1rem;
     font-weight: 650;
 }
 
-.listItem{
+.listItem {
 
 }
 
-.remainingTimeContainer{
+.remainingTimeContainer {
 
 }
 
-.remainingTimeText{
+.remainingTimeText {
     font-weight: bold;
 }
 
-.startTestButton{
+.startTestButton {
     margin-top: 0.6rem;
     border: 1px solid #214f9c;
-    border-radius: 20px;
-    padding: 1rem 3rem;
+    border-radius: 200px;
+    padding: 0.75rem 1.75rem;
     font-size: 16px;
-    background-color:#214f9c;
+    background-color: #214f9c;
     font-weight: bold;
     color: white;
     align-self: flex-end;
+    cursor: pointer;
 }
+
+.disabled {
+    border: 1px solid #747678;
+    background-color: #747678;
+}
+

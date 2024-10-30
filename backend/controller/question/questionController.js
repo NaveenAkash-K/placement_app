@@ -102,7 +102,7 @@ router.post("/new-questions", async (req, res) => {
     const randomizedQuestions = selectedQuestions.map((q) => {
       const shuffledOptions = shuffleArray([...q.options]);
       return {
-        questionId: q.questionId,
+        questionId: q._id,
         time: q.time
       };
     });
@@ -148,6 +148,7 @@ router.post("/fetch-question", async (req, res) => {
 
     res.json({
       question: {
+        questionId: question._id,
         question: question.question,
         isCheckBox: question.isCheckBox,
         options: shuffledOptions,

@@ -5,7 +5,7 @@
     position: relative;
 }
 
-.tabSwitchBackdrop {
+.backdrop {
     position: fixed;
     top: 0;
     left: 0;
@@ -115,7 +115,7 @@
 
 
 .attended {
-    background-color: #fff07a;
+    background-color: #fff6a1;
     border-color: #ffe200;
 }
 
@@ -189,6 +189,14 @@
     font-weight: bold;
 }
 
+.savedContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 2rem;
+    gap: 5px;
+}
+
 .questionNoContainer {
     display: flex;
     align-items: baseline;
@@ -215,4 +223,115 @@
     color: white;
     font-weight: 500;
     align-self: flex-end;
+}
+
+
+/*end test warning*/
+.endTestContent {
+    width: 80%;
+    max-width: 600px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    animation: scaleUp 0.3s ease-in-out;
+}
+
+.endTestTitle {
+    font-size: 1.8rem;
+    color: #FF6B6B;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.endTestMessage {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.summaryContainer {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.summaryTitle {
+    font-size: 1.2rem;
+    color: #666;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.summaryGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.5rem;
+}
+
+.questionStatus {
+    padding: 0.5rem;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.completed {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.notCompleted {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.confirmationMessage {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.cancelButton {
+    padding: 0.7rem 1.2rem;
+    font-size: 1rem;
+    background-color: #6c757d;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cancelButton:hover {
+    background-color: #5a6268;
+}
+
+.endTestButton {
+    padding: 0.7rem 1.2rem;
+    font-size: 1rem;
+    background-color: #FF6B6B;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.endTestButton:hover {
+    background-color: #ff5252;
+}
+
+@keyframes scaleUp {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }

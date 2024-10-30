@@ -10,15 +10,28 @@ const quizSlice = createSlice({
         reducers: {
             initializeQuestions: (state, action) => {
                 state.questions = action.payload.map(question => {
-                    return {
-                        questionId: question.questionId,
-                        questionText: null,
-                        time: question.time,
-                        isCompleted: false,
-                        isAttended: false,
-                        isFetched: false,
-                        options: [],
-                        selectedAnswers: []
+                    if (question.isCompleted) {
+                        return {
+                            questionId: question.questionId,
+                            questionText: question.question, // TODO: Need to review
+                            time: question.time,
+                            isCompleted: true,
+                            isAttended: true,
+                            isFetched: true,
+                            options: question.options,
+                            selectedAnswers: question.userAnswer
+                        }
+                    } else {
+                        return {
+                            questionId: question.questionId,
+                            questionText: null,
+                            time: question.time,
+                            isCompleted: false,
+                            isAttended: false,
+                            isFetched: false,
+                            options: [],
+                            selectedAnswers: []
+                        }
                     }
                 })
             },
@@ -38,7 +51,11 @@ const quizSlice = createSlice({
                     return question;
                 })
             },
-            addQuestion: (state, action) => {
+            clearQuiz: () => {
+                return {
+                    selectedQuestion: 0,
+                    questions: []
+                };
             },
             answerQuestion: (state, action) => {
                 state.questions = state.questions.map(question => {
@@ -68,7 +85,7 @@ const quizSlice = createSlice({
 ;
 
 export const {
-    addQuestion,
+    clearQuiz,
     answerQuestion,
     initializeQuestions,
     updateSelectedQuestion,
