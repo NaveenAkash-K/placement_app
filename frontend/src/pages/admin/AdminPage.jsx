@@ -2,8 +2,21 @@ import styles from "./adminPage.module.css"
 import Stat from "../../components/admin/Stat";
 import EditCourseCard from "../../components/admin/EditCourseCard";
 import {PieChart} from "@mui/x-charts/PieChart"
+import {useEffect, useLayoutEffect} from "react";
+import {useNavigate} from "react-router-dom";
+
 
 const AdminPage = () => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (localStorage.getItem("role") === "student") {
+            console.log("Hi")
+            navigate("/student/home")
+            return;
+        }
+    }, []);
+
     return <div className={styles.adminPage}>
         <h1 className={styles.statsText}>Stats</h1>
         <div className={styles.statsContainer}>

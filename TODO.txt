@@ -1,0 +1,15 @@
+admin
+
+getCourseAPI
+getStatsAPI
+{
+    totalStudents,
+    courses:{
+        total,
+        split:[{dept:"", value:""}, ...]
+    }
+    certificatesObtained:{
+        total,
+        split:[{dept:"", value:""}, ...]
+    },
+}

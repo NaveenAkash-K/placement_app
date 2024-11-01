@@ -1,0 +1,59 @@
+.coursePage {
+    color: #3c4043;
+}
+
+.headerAndTabContainer {
+    text-align: center;
+}
+
+.headerCourseName{
+    font-size: 45px;
+    padding: 0.25rem 1rem;
+    font-weight: 600;
+}
+
+.tabContainer {
+    position: sticky;
+    top: 0;
+    background-color: #f7f7f8;
+    z-index: 2;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 3rem;
+    /*position: relative;*/
+    border-bottom: #d0d0d0 2px solid;
+}
+
+.tab {
+    width: 50%;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.verticalDivider{
+    width: 1px;
+    height: 100%;
+    background-color: #d0d0d0;
+    z-index: -2;
+}
+
+.tabIndicatorContainer {
+    position: absolute;
+    width: 50%;
+    background-color: rgba(174, 203, 255, 0.27);
+    height: 100%;
+    z-index: -1;
+    bottom: 0;
+    transition: left 0.3s ease;
+}
+
+.tabIndicator {
+    position: absolute;
+    width: 100%;
+    background-color: #214f9c;
+    border-radius: 100px 100px 0 0;
+    height: 3px;
+    bottom: 0;
+}

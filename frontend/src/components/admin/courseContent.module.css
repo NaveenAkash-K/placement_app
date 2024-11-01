@@ -1,0 +1,86 @@
+.courseContent{
+    color: #3c4043;
+    margin: auto;
+    width: 80%;
+    display: flex;
+}
+
+.imageAndDetailsContainer {
+    padding: 1rem 1rem;
+}
+
+.imageAndDetailsStickyContainer{
+    position: sticky;
+    top: 4rem;
+}
+
+.courseImg {
+    border-radius: 6px;
+    display: block;
+    object-fit: cover;
+    width: 100%;
+}
+
+.detailsContainer {
+    margin-top: 1rem;
+    width: 100%;
+    /*overflow: auto;*/
+    height: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.nameText {
+    font-weight: bold;
+    font-size: 38px;
+}
+
+.aboutText {
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: start;
+}
+
+.contentsAndRequirementsContainer {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+.contentsContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1;
+}
+
+.contentsTitleText {
+    font-weight: 600;
+}
+
+.requirementsContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1;
+}
+
+.requirementsTitleText {
+    font-weight: 600;
+}
+
+.courseSectionContainerTitle {
+    font-weight: bold;
+}
+
+.courseSectionsContainer {
+    display: flex;
+    width: 100%;
+    margin-top: 1rem;
+    margin-bottom: 10rem;
+    align-items: center;
+    flex-direction: column;
+    gap: 30px;
+}

@@ -1,4 +1,4 @@
-import React, {useLayoutEffect} from "react";
+import React, {useEffect, useLayoutEffect} from "react";
 import {BrowserRouter, createBrowserRouter, RouterProvider, useLocation, useNavigate} from "react-router-dom";
 import LoginPage from "./pages/common/LoginPage";
 import styles from "./App.css"
@@ -13,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import checkAuthAPI from "./apis/checkAuthAPI";
 import TestInstructionsPage from "./components/student/TestInstructionsPage";
 import TestResultPage from "./components/student/TestResultPage";
+import CoursePage from "./pages/admin/CoursePage";
 
 const router = createBrowserRouter([
     {
@@ -83,12 +84,23 @@ const router = createBrowserRouter([
                     <AdminPage/>
                 </>
             },
+            {
+                path: "course/:courseId",
+                element: <>
+                    <Nav/>
+                    <CoursePage/>
+                </>
+            },
         ]
     },
 ]);
 
 function App() {
-    useLayoutEffect(() => {
+    useEffect(() => {
+        if (!localStorage.getItem("jwtToken")) {
+            router.navigate("/auth/login");
+            return;
+        }
         if (localStorage.getItem("jwtToken")) {
             checkAuthAPI().then().catch(error => {
                 toast("Session Expired! Please login again", {type: "warning"});

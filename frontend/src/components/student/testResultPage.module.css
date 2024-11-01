@@ -18,32 +18,11 @@
     background: linear-gradient(135deg, #fff3f3, #d9e7ff);
 }
 
-.resultHeader {
-    padding: 2rem 3rem;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-    text-align: center;
-    transition: transform 0.3s ease;
-}
-
-.passHeader {
-    background: #f1f8ff;
-}
-
-.failHeader {
-    background: #f1f8ff;
-}
-
-.icon {
+.passIcon {
     color: #4caf50;
-    animation: bounce 1s ease infinite alternate;
 }
 
-.failHeader .icon {
+.failIcon {
     color: #e74c3c;
 }
 
@@ -112,4 +91,53 @@
     color: #888;
     text-align: center;
     max-width: 500px;
+}
+
+.attemptsContainer {
+    width: 100%;
+    /*max-width: 800px;*/
+    /*margin: 20px auto;*/
+    /*padding: 20px;*/
+    /*background-color: #f9f9f9;*/
+    /*border-radius: 12px;*/
+    /*box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);*/
+}
+
+.attemptsText {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+    color: #333;
+}
+
+.tableHead {
+    background-color: #214f9c;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 12px;
+}
+
+.tableRow:nth-child(even) {
+    background-color: rgba(174, 203, 255, 0.27);
+}
+
+.tableData {
+    font-weight: bold;
+
+    padding: 12px;
+    text-align: center;
+    color: #555;
+}
+
+.score {
+    font-weight: bold;
+    color: #333;
 }

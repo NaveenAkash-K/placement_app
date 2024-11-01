@@ -17,9 +17,9 @@ const StudentPage = () => {
     const registeredCourses = useSelector(state => state.courses.registeredCourses)
     const unregisteredCourses = useSelector(state => state.courses.unregisteredCourses)
 
-    useLayoutEffect(() => {
-        if (!localStorage.getItem("jwtToken")) {
-            navigate("/auth/login");
+    useEffect(() => {
+        if (localStorage.getItem("role") === "admin"){
+            navigate("/admin/home")
             return;
         }
     }, []);
