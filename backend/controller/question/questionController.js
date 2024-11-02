@@ -54,16 +54,17 @@ router.post("/new-questions", async (req, res) => {
     }).lean();
 
     if (activeSession) {
-      const questionDetails = activeSession.questions.map((q) => ({
+      const questions = activeSession.questions.map((q) => ({
+        question:q.question._id,
         text: q.question.question,
         options: q.question.options,
         userAnswer: q.userAnswer,
-        isCompleted: q.isCompleted,
+        isFetched: q.isFetched,
         isCheckBox: q.question.isCheckBox,
         time: q.question.time,
       }));
       return res.json({
-        questionDetails,
+        questions,
         session: {
           sessionId: activeSession.sessionId,
         },
@@ -130,7 +131,7 @@ router.post("/new-questions", async (req, res) => {
       expiryTime: new Date(Date.now() + 60 * 60 * 1000),
       isExpired: false,
     });
-    
+
     // const sessionToSend = {
     //   ...session._doc,
     //   questions: session.questions.map(({ isCorrect, ...rest }) => rest),
@@ -159,6 +160,19 @@ router.post("/fetch-question", async (req, res) => {
     }
 
     const shuffledOptions = shuffleArray([...question.options]);
+
+    await Session.findOneAndUpdate(
+        {
+          sessionId: sessionId,
+          "questions.question": question._id,
+        },
+        {
+          $set: {
+            "questions.$.isFetched": true
+          },
+        },
+        { new: true }
+    );
 
     res.json({
       question: {

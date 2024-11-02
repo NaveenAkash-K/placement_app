@@ -28,7 +28,10 @@ const sessionSchema = new Schema({
         },
         userAnswer: [String],
         isCorrect: Boolean,
-        isCompleted: Boolean
+        isFetched: {
+          type: Boolean,
+          default: false,
+        }
     }
   ],
   startTime: {

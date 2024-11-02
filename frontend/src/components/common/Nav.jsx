@@ -52,7 +52,13 @@ const Nav = () => {
                     <div className={styles.profile}>{localStorage.getItem("username")[0]}</div>
                     <p className={styles.nameText}> {localStorage.getItem("username")}</p>
                 </div> : null}
-            {location.pathname.startsWith("/admin") ? <div className={styles.profileAndNameContainer}>
+            {location.pathname.startsWith("/admin") ? <div className={styles.profileAndNameContainer} onClick={() => setIsDropdownVisible(prev => !prev)}>
+                {isDropdownVisible && <div className={styles.dropdownContainer}>
+                    <div className={styles.logoutButton} onClick={logout}>
+                        <IoMdLogOut size={20}/>
+                        <p>Logout</p>
+                    </div>
+                </div>}
                 <div className={styles.profile}>{localStorage.getItem("username")[0]}</div>
                 <p className={styles.nameText}>{localStorage.getItem("username")}</p>
             </div> : null}

@@ -27,6 +27,7 @@ const QuizPage = () => {
     const questionData = quizQuestions[selectedQuestion];
     const dispatch = useDispatch();
     const [isTabSwitchOverlayVisible, setIsTabSwitchOverlayVisible] = useState(false);
+    const isTabSwitchOverlayVisibleRef = useRef(false); // Use ref to track overlay visibility
     const [isFullscreenWarningVisible, setIsFullscreenWarningVisible] = useState(false);
     const [isEndTestWarningVisible, setIsEndTestWarningVisible] = useState(false)
     const navigate = useNavigate();
@@ -80,70 +81,66 @@ const QuizPage = () => {
         };
     }, [watermarkText]);
 
-    // useEffect(() => {
-    //     // Handle window focus and blur events
-    //     const handleWindowFocus = () => {
-    //         console.log("Focus regained");
-    //     };
-    //
-    //     const handleWindowBlur = async () => {
-    //         await tabSwitchAPI();
-    //         setIsTabSwitchOverlayVisible(true);
-    //         console.log("Tab/Window switched");
-    //     };
-    //
-    //     // Disable right-click context menu
-    //     const disableRightClick = (e) => e.preventDefault();
-    //
-    //     // Disable specific key shortcuts
-    //     const disableKeyShortcuts = (e) => {
-    //         if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'I' || e.key === 'S' || e.key === 'U')) {
-    //             e.preventDefault();
-    //         }
-    //
-    //         if (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's' || e.key === 'i')) {
-    //             e.preventDefault();
-    //         }
-    //
-    //         if (e.key === 'F12') {
-    //             e.preventDefault();
-    //         }
-    //     };
-    //
-    //     // Prevent back button navigation
-    //     const handleBackButton = (event) => {
-    //         event.preventDefault();
-    //         setIsTabSwitchOverlayVisible(true); // Show warning overlay
-    //         console.log("Back navigation attempt prevented");
-    //     };
-    //
-    //     // Detect fullscreen exit
-    //     const handleFullscreenChange = () => {
-    //         if (!document.fullscreenElement) {
-    //             setIsFullscreenWarningVisible(true);
-    //         }
-    //     };
-    //
-    //     // Adding event listeners
-    //     window.addEventListener("blur", handleWindowBlur);
-    //     window.addEventListener("focus", handleWindowFocus);
-    //     window.addEventListener("contextmenu", disableRightClick);
-    //     document.addEventListener("keydown", disableKeyShortcuts);
-    //     window.addEventListener("popstate", handleBackButton); // Listen for back button actions
-    //     document.addEventListener("fullscreenchange", handleFullscreenChange); // Listen for fullscreen changes
-    //
-    //
-    //     // Cleanup event listeners on component unmount
-    //     return () => {
-    //         window.removeEventListener("blur", handleWindowBlur);
-    //         window.removeEventListener("focus", handleWindowFocus);
-    //         window.removeEventListener("contextmenu", disableRightClick);
-    //         document.removeEventListener("keydown", disableKeyShortcuts);
-    //         window.removeEventListener("popstate", handleBackButton);
-    //         document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    //         clearInterval(intervalId.current);
-    //     };
-    // }, []);
+    useEffect(() => {
+        const handleWindowBlur = async () => {
+            if (isTabSwitchOverlayVisibleRef.current) return;
+            await tabSwitchAPI();
+            setIsTabSwitchOverlayVisible(true);
+            isTabSwitchOverlayVisibleRef.current = true;
+            console.log("Tab/Window switched");
+        };
+
+        const handleWindowFocus = () => {
+            console.log("Focus regained");
+        };
+
+        const disableRightClick = (e) => e.preventDefault();
+
+        const disableKeyShortcuts = (e) => {
+            if ((e.ctrlKey && e.shiftKey && ['C', 'I', 'S', 'U'].includes(e.key)) ||
+                (e.ctrlKey && ['c', 'u', 's', 'i'].includes(e.key)) ||
+                e.key === 'F12') {
+                e.preventDefault();
+            }
+        };
+
+        const handleFullscreenChange = async () => {
+            if (!document.fullscreenElement) {
+                setIsFullscreenWarningVisible(true);
+                await tabSwitchAPI();
+            }
+        };
+
+        const handleBackButton = (event) => {
+            if (!isTabSwitchOverlayVisibleRef.current) {
+                setIsTabSwitchOverlayVisible(true);
+                isTabSwitchOverlayVisibleRef.current = true;
+                console.log("Back navigation attempt prevented");
+            }
+            window.history.pushState(null, document.title, window.location.href);
+        };
+
+        // Initial state setup to prevent back navigation
+        window.history.pushState(null, document.title, window.location.href);
+
+        // Add all event listeners
+        window.addEventListener("blur", handleWindowBlur);
+        window.addEventListener("focus", handleWindowFocus);
+        window.addEventListener("contextmenu", disableRightClick);
+        document.addEventListener("keydown", disableKeyShortcuts);
+        document.addEventListener("fullscreenchange", handleFullscreenChange);
+        window.addEventListener("popstate", handleBackButton);
+
+        return () => {
+            // Cleanup all event listeners
+            window.removeEventListener("blur", handleWindowBlur);
+            window.removeEventListener("focus", handleWindowFocus);
+            window.removeEventListener("contextmenu", disableRightClick);
+            document.removeEventListener("keydown", disableKeyShortcuts);
+            document.removeEventListener("fullscreenchange", handleFullscreenChange);
+            window.removeEventListener("popstate", handleBackButton);
+        };
+    }, []);
 
     const startTimer = () => {
         clearInterval(intervalId.current);
@@ -254,7 +251,10 @@ const QuizPage = () => {
                     <p className={styles.tabSwitchMessage}>
                         This incident has been reported. Repeated tab switches leads to termination of test
                     </p>
-                    <button className={styles.tabSwitchButton} onClick={() => setIsTabSwitchOverlayVisible(false)}>
+                    <button className={styles.tabSwitchButton} onClick={() => {
+                        isTabSwitchOverlayVisibleRef.current = false;
+                        setIsTabSwitchOverlayVisible(false)
+                    }}>
                         Return to Test
                     </button>
                 </div>

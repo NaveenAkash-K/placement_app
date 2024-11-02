@@ -10,10 +10,10 @@ const quizSlice = createSlice({
         reducers: {
             initializeQuestions: (state, action) => {
                 state.questions = action.payload.map(question => {
-                    if (question.isCompleted) {
+                    if (question.isFetched) {
                         return {
-                            questionId: question.questionId,
-                            questionText: question.question, // TODO: Need to review
+                            questionId: question.question,
+                            questionText: question.text,
                             time: question.time,
                             isCompleted: true,
                             isAttended: true,
@@ -23,7 +23,7 @@ const quizSlice = createSlice({
                         }
                     } else {
                         return {
-                            questionId: question.questionId,
+                            questionId: question.question,
                             questionText: null,
                             time: question.time,
                             isCompleted: false,
