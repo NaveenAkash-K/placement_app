@@ -27,7 +27,8 @@ const sessionSchema = new Schema({
             required: true,
         },
         userAnswer: [String],
-        isCorrect: Boolean
+        isCorrect: Boolean,
+        isCompleted: Boolean
     }
   ],
   startTime: {

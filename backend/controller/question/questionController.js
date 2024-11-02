@@ -48,11 +48,22 @@ router.post("/new-questions", async (req, res) => {
       courseId: courseId,
       sectionNo: sectionNo,
       isExpired: false,
-    });
+    }).populate({
+      path: "questions.question",
+      select: "question options time isCheckBox"
+    }).lean();
 
     if (activeSession) {
+      const questionDetails = activeSession.questions.map((q) => ({
+        text: q.question.question,
+        options: q.question.options,
+        userAnswer: q.userAnswer,
+        isCompleted: q.isCompleted,
+        isCheckBox: q.question.isCheckBox,
+        time: q.question.time,
+      }));
       return res.json({
-        ...activeSession._doc,
+        questionDetails,
         session: {
           sessionId: activeSession.sessionId,
         },
@@ -100,9 +111,8 @@ router.post("/new-questions", async (req, res) => {
 
     const selectedQuestions = shuffleArray(newQuestions).slice(0, n);
     const randomizedQuestions = selectedQuestions.map((q) => {
-      const shuffledOptions = shuffleArray([...q.options]);
       return {
-        questionId: q._id,
+        question: q._id,
         time: q.time
       };
     });
@@ -114,15 +124,19 @@ router.post("/new-questions", async (req, res) => {
       sectionNo: sectionNo,
       questions: selectedQuestions.map((q) => ({
         question: q._id,
-        isCorrect: false,
       })),
       ip: req.ip,
       startTime: new Date(),
       expiryTime: new Date(Date.now() + 60 * 60 * 1000),
       isExpired: false,
     });
+    
+    // const sessionToSend = {
+    //   ...session._doc,
+    //   questions: session.questions.map(({ isCorrect, ...rest }) => rest),
+    // }
 
-    res.json({ questions: randomizedQuestions, session });
+    res.json({ questions: randomizedQuestions, session: session });
   } catch (error) {
     console.error("Error fetching new questions:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -183,6 +197,7 @@ router.post("/update-answer", async (req, res) => {
         $set: {
           "questions.$.userAnswer": userAnswer,
           "questions.$.isCorrect": isCorrect,
+          "questions.$.isCompleted": true
         },
       },
       { new: true }
