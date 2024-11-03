@@ -76,7 +76,11 @@ router.post("/new-questions", async (req, res) => {
       courseId: courseId,
       sectionNo: sectionNo,
     }).populate("questions.question");
-    console.log(previousSessions);
+    console.log(previousSessions.length);
+    // TODO: Decide whether to keep the no of attempts in env
+    if (previousSessions.length >= 2) {
+      return res.json({ message: "Maximum no of attempts reached" });
+    }
 
     const previouslyAskedQuestions = previousSessions.flatMap((session) =>
       session.questions.map((q) => q.question.questionId)
