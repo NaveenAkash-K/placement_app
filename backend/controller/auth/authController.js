@@ -38,7 +38,7 @@ router.post("/login", async (req, res) => {
 
     res.json({
       jwtToken,
-      userId: user._id,
+      userId: user.uid,
       email: user.email,
       role: user.role,
       name: user.name,
