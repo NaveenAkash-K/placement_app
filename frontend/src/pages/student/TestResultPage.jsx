@@ -5,6 +5,7 @@ import calculateResult from "../../apis/calculateResult";
 import {useParams} from "react-router-dom";
 import completeSectionAPI from "../../apis/completeSectionAPI";
 import {courseContent} from "../../data/courseContent";
+import DownloadCertificateButton from "../../components/student/DownloadCertificateButton";
 
 const TestResultPage = () => {
     const params = useParams();
@@ -13,6 +14,7 @@ const TestResultPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const courseData = courseContent.filter(item => item.courseId === courseId)[0];
     const quizIsFinal = courseData.sections[sectionNumber - 1].isFinal;
+    const [hasPassed, setHasPassed] = useState(null)
 
 
     useEffect(() => {
@@ -21,6 +23,7 @@ const TestResultPage = () => {
             setIsLoading(true)
             const response = await calculateResult("CS101", 1)
             setResultResponse(response.data);
+            setHasPassed(response.data.sessionResults[response.data.sessionResults.length - 1].hasPassed)
             setIsLoading(false);
             if (response.data.sessionResults[response.data.sessionResults.length - 1].hasPassed) {
                 await completeSectionAPI(courseId, sectionNumber)
@@ -36,9 +39,9 @@ const TestResultPage = () => {
                 ...Loading
             </div> :
             <div
-                className={`${styles.testResultPage} ${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed ? styles.passBackground : styles.failBackground}`}>
+                className={`${styles.testResultPage} ${hasPassed ? styles.passBackground : styles.failBackground}`}>
                 <div className={styles.content}>
-                    {resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed ? (
+                    {hasPassed ? (
                         <IoMdCheckmarkCircleOutline className={styles.passIcon} size={120}/>
                     ) : (
                         <IoMdCloseCircleOutline className={styles.failIcon} size={120}/>
@@ -46,22 +49,25 @@ const TestResultPage = () => {
                     <div className={styles.textDiv}>
                         <p className={styles.courseTitleText}>{courseData.courseName}</p>
                         <p className={styles.congratsText}>
-                            {resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed ? `🎉 Congratulations, ${localStorage.getItem("username")}! 🎉` : `😞 Sorry, ${localStorage.getItem("username")}.`}
+                            {hasPassed ? `🎉 Congratulations, ${localStorage.getItem("username")}! 🎉` : `😞 Sorry, ${localStorage.getItem("username")}.`}
                         </p>
                         <p className={styles.successText}>
-                            {resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed ? "You have successfully passed the test." : "You did not pass the test this time."}
+                            {hasPassed ? "You have successfully passed the test." : "You did not pass the test this time."}
                         </p>
                     </div>
                     <br/>
-                    <h2 className={`${styles.scoreText} ${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed ? styles.passScore : styles.failScore}`}>
-                        {resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed ? `Your Score: ${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].correctAnswers}/${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].totalQuestions}` : `Your Score: ${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].correctAnswers}/${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].totalQuestions}`}
+                    <h2 className={`${styles.scoreText} ${hasPassed ? styles.passScore : styles.failScore}`}>
+                        {hasPassed ? `Your Score: ${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].correctAnswers}/${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].totalQuestions}` : `Your Score: ${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].correctAnswers}/${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].totalQuestions}`}
                     </h2>
+                    { hasPassed && <DownloadCertificateButton onClick={() => {
+                    }}/>}
+                    <br/>
                     <p className={styles.encouragementText}>
-                        {resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed
+                        {hasPassed
                             ? "Keep up the great work and aim even higher in future tests!"
                             : "Don't worry! Study a bit more and give it another try.\n Please contact the admin for retest. You need atleast " + resultResponse.cutOff + " % to pass the test"}
                     </p>
-                    {(resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed && quizIsFinal) &&
+                    {(hasPassed && quizIsFinal) &&
                         <p className={styles.encouragementText}>Your certificate will be sent to your email
                             shortly.</p>}
                     <br/>

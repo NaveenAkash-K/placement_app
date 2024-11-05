@@ -21,6 +21,7 @@ import formatTimer from "../../utils/formatTimer";
 import goFullScreen from "../../utils/goFullscreen";
 import completeSectionAPI from "../../apis/completeSectionAPI";
 import {courseContent} from "../../data/courseContent";
+import {FaCheckCircle, FaQuestionCircle, FaTimesCircle} from "react-icons/fa";
 
 const QuizPage = () => {
     const params = useParams();
@@ -205,15 +206,32 @@ const QuizPage = () => {
 
                         <div className={styles.summaryContainer}>
                             <h3 className={styles.summaryTitle}>Summary of Questions</h3>
-                            <div className={styles.summaryGrid}>
-                                {quizQuestions.map((question, index) => (
-                                    <div key={index}
-                                         className={`${styles.questionStatus} ${question.isCompleted ? styles.completed : styles.notCompleted}`}>
-                                        <p>Question {index + 1}</p>
-                                        <span>{question.isCompleted ? "Answered" : "Unanswered"}</span>
-                                    </div>
-                                ))}
+                            <div className={styles.summaryDataRow}>
+                                <FaQuestionCircle className={styles.icon}/>
+                                <p className={styles.summaryData}>Total Questions: <span
+                                    className={styles.summaryValue}>{quizQuestions.length}</span></p>
                             </div>
+                            <div className={styles.summaryDataRow}>
+                                <FaCheckCircle className={styles.icon}/>
+                                <p className={styles.summaryData}>Answered Questions: <span
+                                    className={styles.summaryValue}>{quizQuestions.reduce((acc, item) => item.isCompleted ? acc + 1 : acc, 0)}</span>
+                                </p>
+                            </div>
+                            <div className={styles.summaryDataRow}>
+                                <FaTimesCircle className={styles.icon}/>
+                                <p className={styles.summaryData}>Unanswered Questions: <span
+                                    className={styles.summaryValue}>{quizQuestions.reduce((acc, item) => !item.isCompleted ? acc + 1 : acc, 0)}</span>
+                                </p>
+                            </div>
+                            {/*<div className={styles.summaryGrid}>*/}
+                            {/*    {quizQuestions.map((question, index) => (*/}
+                            {/*        <div key={index}*/}
+                            {/*             className={`${styles.questionStatus} ${question.isCompleted ? styles.completed : styles.notCompleted}`}>*/}
+                            {/*            <p>Question {index + 1}</p>*/}
+                            {/*            <span>{question.isCompleted ? "Answered" : "Unanswered"}</span>*/}
+                            {/*        </div>*/}
+                            {/*    ))}*/}
+                            {/*</div>*/}
                         </div>
 
                         <p className={styles.confirmationMessage}>
@@ -279,7 +297,7 @@ const QuizPage = () => {
             </div>}
             <div className={styles.waterMark}/>
             <div className={styles.questionSelectorContainer}>
-                <p className={styles.questionSelectorTitle}>Questions</p>
+                <p className={styles.questionSelectorTitle}>Ques...</p>
                 <div className={styles.questionsGrid}>
                     {quizQuestions.map((question, index) => {
                         return (
