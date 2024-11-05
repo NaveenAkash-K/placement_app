@@ -1,5 +1,6 @@
 import styles from "./listOfStudents.module.css"
 import {IoMdCheckmarkCircleOutline, IoMdCloseCircleOutline} from "react-icons/io";
+import {FiDownloadCloud} from "react-icons/fi";
 
 const ListOfStudents = (props) => {
     return <table className={styles.listOfStudentsTable}>
@@ -10,6 +11,7 @@ const ListOfStudents = (props) => {
             <th className={styles.tableHead}>Dept</th>
             <th className={styles.tableHead}>RegNo</th>
             <th className={styles.tableHead}>Progress</th>
+            {props.attempts && <th className={styles.tableHead}>Attempts</th>}
             {props.attempts && <th className={styles.tableHead}>Request</th>}
             {props.certificate && <th className={styles.tableHead}>Certificate</th>}
         </tr>
@@ -21,6 +23,9 @@ const ListOfStudents = (props) => {
             <td className={styles.tableData}>{"INT"}</td>
             <td className={styles.tableData}>{2127210801066}</td>
             <td className={styles.tableData}>{"89"} %</td>
+            {props.attempts && <td className={styles.tableData}>
+                2
+            </td>}
             {props.attempts && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
                 <div className={styles.verticalDivider}/>
                 <button className={styles.revokeButton}>
@@ -32,10 +37,11 @@ const ListOfStudents = (props) => {
                     Revoke Course
                 </button>
             </td>}
-                        {props.certificate && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
+            {props.certificate && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
                 <div className={styles.verticalDivider}/>
                 <button className={styles.certificateButton}>
-                    Download
+                    <FiDownloadCloud size={20}/>
+                    <h3 style={{fontWeight:"bold"}}>Download</h3>
                 </button>
             </td>}
         </tr>
@@ -45,6 +51,9 @@ const ListOfStudents = (props) => {
             <td className={styles.tableData}>{"INT"}</td>
             <td className={styles.tableData}>{2127210801066}</td>
             <td className={styles.tableData}>{"89"} %</td>
+            {props.attempts && <td className={styles.tableData}>
+                2
+            </td>}
             {props.attempts && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
                 <div className={styles.verticalDivider}/>
                 <button className={styles.revokeButton}>
@@ -56,10 +65,11 @@ const ListOfStudents = (props) => {
                     Revoke Course
                 </button>
             </td>}
-                        {props.certificate && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
+            {props.certificate && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
                 <div className={styles.verticalDivider}/>
                 <button className={styles.certificateButton}>
-                    Download
+                    <FiDownloadCloud size={20}/>
+                    <h3 style={{fontWeight:"bold"}}>Download</h3>
                 </button>
             </td>}
         </tr>
@@ -69,6 +79,9 @@ const ListOfStudents = (props) => {
             <td className={styles.tableData}>{"INT"}</td>
             <td className={styles.tableData}>{2127210801066}</td>
             <td className={styles.tableData}>{"89"} %</td>
+            {props.attempts && <td className={styles.tableData}>
+                2
+            </td>}
             {props.attempts && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
                 <div className={styles.verticalDivider}/>
                 <button className={styles.revokeButton}>
@@ -80,10 +93,11 @@ const ListOfStudents = (props) => {
                     Revoke Course
                 </button>
             </td>}
-                        {props.certificate && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
+            {props.certificate && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
                 <div className={styles.verticalDivider}/>
                 <button className={styles.certificateButton}>
-                    Download
+                    <FiDownloadCloud size={20}/>
+                    <h3 style={{fontWeight:"bold"}}>Download</h3>
                 </button>
             </td>}
         </tr>
@@ -93,6 +107,9 @@ const ListOfStudents = (props) => {
             <td className={styles.tableData}>{"INT"}</td>
             <td className={styles.tableData}>{2127210801066}</td>
             <td className={styles.tableData}>{"89"} %</td>
+            {props.attempts && <td className={styles.tableData}>
+                2
+            </td>}
             {props.attempts && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
                 <div className={styles.verticalDivider}/>
                 <button className={styles.revokeButton}>
@@ -104,10 +121,11 @@ const ListOfStudents = (props) => {
                     Revoke Course
                 </button>
             </td>}
-                        {props.certificate && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
+            {props.certificate && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
                 <div className={styles.verticalDivider}/>
                 <button className={styles.certificateButton}>
-                    Download
+                    <FiDownloadCloud size={20}/>
+                    <h3 style={{fontWeight:"bold"}}>Download</h3>
                 </button>
             </td>}
         </tr>
@@ -117,6 +135,9 @@ const ListOfStudents = (props) => {
             <td className={styles.tableData}>{"INT"}</td>
             <td className={styles.tableData}>{2127210801066}</td>
             <td className={styles.tableData}>{"89"} %</td>
+            {props.attempts && <td className={styles.tableData}>
+                2
+            </td>}
             {props.attempts && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
                 <div className={styles.verticalDivider}/>
                 <button className={styles.revokeButton}>
@@ -128,10 +149,11 @@ const ListOfStudents = (props) => {
                     Revoke Course
                 </button>
             </td>}
-                        {props.certificate && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
+            {props.certificate && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
                 <div className={styles.verticalDivider}/>
                 <button className={styles.certificateButton}>
-                    Download
+                    <FiDownloadCloud size={20}/>
+                    <h3 style={{fontWeight:"bold"}}>Download</h3>
                 </button>
             </td>}
         </tr>
@@ -141,6 +163,9 @@ const ListOfStudents = (props) => {
             <td className={styles.tableData}>{"INT"}</td>
             <td className={styles.tableData}>{2127210801066}</td>
             <td className={styles.tableData}>{"89"} %</td>
+            {props.attempts && <td className={styles.tableData}>
+                2
+            </td>}
             {props.attempts && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
                 <div className={styles.verticalDivider}/>
                 <button className={styles.revokeButton}>
@@ -152,10 +177,11 @@ const ListOfStudents = (props) => {
                     Revoke Course
                 </button>
             </td>}
-                        {props.certificate && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
+            {props.certificate && <td className={`${styles.tableData} ${styles.revokeButtonContainer}`}>
                 <div className={styles.verticalDivider}/>
                 <button className={styles.certificateButton}>
-                    Download
+                    <FiDownloadCloud size={20}/>
+                    <h3 style={{fontWeight:"bold"}}>Download</h3>
                 </button>
             </td>}
         </tr>

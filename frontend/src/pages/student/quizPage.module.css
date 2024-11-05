@@ -105,30 +105,31 @@
 
 .questionSelectorContainer {
     display: flex;
-    position: sticky;
-    top: 0;
+
     flex-direction: column;
     align-items: center;
-    width: 9rem;
+    width: 6rem;
     border-right: #d0d0d0 2px solid;
     height: 100vh; /* Full viewport height */
     scroll-behavior: smooth;
+    overflow: auto;
+    scrollbar-width: thin;
 }
 
 .questionsGrid {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    flex-direction: column;
+    /*flex-wrap: wrap;*/
+    gap: 1rem;
     align-items: center;
     justify-content: center;
     padding-bottom: 1rem;
-    overflow: auto;
-    scrollbar-width: thin;
+
     /*scrollbar-width: none;*/
 }
 
 .questionSelectorTitle {
-    margin: 1rem 0;
+    margin: 1rem 0rem;
     font-weight: bold;
 }
 
@@ -170,7 +171,6 @@
 }
 
 .loadQuestionContainer {
-
 }
 
 .loadQuestionButton {
@@ -209,6 +209,7 @@
 }
 
 .timer {
+    margin-top: 2rem;
     color: crimson;
     display: flex;
     align-items: center;
@@ -283,6 +284,9 @@
 }
 
 .summaryContainer {
+    display: flex;
+    flex-direction: column;
+    /*align-items: center;*/
     background-color: #f9f9f9;
     padding: 1rem;
     border-radius: 8px;
@@ -290,10 +294,38 @@
 }
 
 .summaryTitle {
-    font-size: 1.2rem;
-    color: #666;
+    font-size: 1.4rem;
+    color: #333;
     font-weight: bold;
-    margin-bottom: 0.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 0.5rem;
+}
+
+.summaryDataRow {
+    display: flex;
+    margin-left: 10rem;
+    /*align-items: center;*/
+    margin-bottom: 0.8rem;
+}
+
+.icon {
+    font-size: 1.2rem;
+    color: #ff6b6b;
+    margin-right: 0.6rem;
+}
+
+.summaryData {
+    font-size: 1rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.summaryValue {
+    font-weight: bold;
+    color: #333;
+    font-size: 1.1rem;
 }
 
 .summaryGrid {

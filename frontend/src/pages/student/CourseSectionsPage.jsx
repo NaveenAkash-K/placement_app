@@ -6,6 +6,8 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {useEffect, useLayoutEffect, useState} from "react";
+import {FiDownloadCloud} from "react-icons/fi";
+import DownloadCertificateButton from "../../components/student/DownloadCertificateButton";
 
 const CourseSectionsPage = (props) => {
     const params = useParams();
@@ -22,7 +24,11 @@ const CourseSectionsPage = (props) => {
                 <img src={flutter_image} className={styles.courseImg}/>
                 <div className={styles.detailsContainer}>
                     <h1 className={styles.nameText}>{courseData.courseName}</h1>
-                    <h2>{courseData.sections.length} Sections</h2>
+                    <div className={styles.sectionNumberAndCertificateContainer}>
+                        <h2>{courseData.sections.length} Sections</h2>
+                        { completedSections.filter(item => item).length === courseData.sections.length && <DownloadCertificateButton onClick={() => {
+                        }}/>}
+                    </div>
                     <p className={styles.aboutText}>Become a Full-Stack Web Developer with just ONE course. HTML, CSS,
                         Javascript, Node, React, PostgreSQL, Web3 and DApps Bestseller</p>
                     <div className={styles.contentsAndRequirementsContainer}>
