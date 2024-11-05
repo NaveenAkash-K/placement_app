@@ -14,6 +14,10 @@ import checkAuthAPI from "./apis/checkAuthAPI";
 import TestInstructionsPage from "./components/student/TestInstructionsPage";
 import TestResultPage from "./components/student/TestResultPage";
 import CoursePage from "./pages/admin/CoursePage";
+import ErrorPage from "./pages/common/ErrorPage";
+import getCoursesAPI from "./apis/getCoursesAPI";
+import {updateCourses} from "./store/coursesSlice";
+import {useDispatch, useSelector} from "react-redux";
 
 const router = createBrowserRouter([
     {
@@ -30,6 +34,7 @@ const router = createBrowserRouter([
     },
     {
         path: "/student",
+        errorElement: <ErrorPage/>,
         children: [
             {
                 path: "home",
@@ -39,20 +44,20 @@ const router = createBrowserRouter([
                 </>,
             },
             {
-                path: "quiz",
+                path: "course/:courseId/:sectionNumber/quiz",
                 element: <>
                     <QuizPage/>
                 </>
             },
             {
-                path: "quiz/instructions",
+                path: "course/:courseId/:sectionNumber/quiz/instructions",
                 element: <>
                     <Nav/>
                     <TestInstructionsPage/>
                 </>
             },
             {
-                path: "quiz/result",
+                path: "course/:courseId/:sectionNumber/quiz/result",
                 element: <>
                     <Nav/>
                     <TestResultPage/>
@@ -71,11 +76,12 @@ const router = createBrowserRouter([
                     <Nav/>
                     <CourseContentPage/>
                 </>
-            }
+            },
         ]
     },
     {
         path: "/admin",
+        errorElement: <ErrorPage/>,
         children: [
             {
                 path: "home",
@@ -91,11 +97,23 @@ const router = createBrowserRouter([
                     <CoursePage/>
                 </>
             },
+            {
+                path: "course/:courseId/sections/:sectionNumber",
+                element: <>
+                    <Nav/>
+                    <CourseContentPage/>
+                </>
+            },
         ]
     },
 ]);
 
 function App() {
+    const dispatch = useDispatch()
+    const unregisteredCourses = useSelector(state => state.courses.unregisteredCourses)
+    const registeredCourses = useSelector(state => state.courses.registeredCourses)
+
+
     useEffect(() => {
         if (!localStorage.getItem("jwtToken")) {
             router.navigate("/auth/login");
@@ -113,6 +131,21 @@ function App() {
     useLayoutEffect(() => {
         if (router.state.location.pathname === "/") router.navigate("/auth/login");
     }, []);
+
+    useEffect(() => {
+        if (localStorage.getItem("role") === "student" && registeredCourses.length === 0 && unregisteredCourses.length === 0) {
+            const fetchCourses = async () => {
+                try {
+                    const response = await getCoursesAPI();
+                    dispatch(updateCourses(response.data));
+                } catch (error) {
+                    console.error("Error fetching courses in App.js", error);
+                }
+            };
+
+            fetchCourses();
+        }
+    }, [dispatch]);
 
     return (
         <div className={styles.app}>

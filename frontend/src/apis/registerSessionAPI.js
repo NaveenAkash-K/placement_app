@@ -5,8 +5,7 @@ const registerSessionAPI = async (courseId, sectionNo) => {
         return await axios.post("http://localhost:3000" + "/quiz/new-questions", {
             courseId,
             sectionNo,
-            // userId: localStorage.getItem("userId")
-            userId: "dfjdflddqdl213487833"
+            userId: localStorage.getItem("userId")
         },
             {
             headers: {

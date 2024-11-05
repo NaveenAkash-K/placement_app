@@ -79,7 +79,7 @@ router.post("/new-questions", async (req, res) => {
     console.log(previousSessions.length);
     // TODO: Decide whether to keep the no of attempts in env
     if (previousSessions.length >= 2) {
-      return res.json({ message: "Maximum no of attempts reached" });
+      return res.status(400).json({ message: "Maximum no of attempts reached" });
     }
 
     const previouslyAskedQuestions = previousSessions.flatMap((session) =>

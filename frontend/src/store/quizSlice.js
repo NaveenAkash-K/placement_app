@@ -19,7 +19,8 @@ const quizSlice = createSlice({
                             isAttended: true,
                             isFetched: true,
                             options: question.options,
-                            selectedAnswers: question.userAnswer
+                            selectedAnswers: question.userAnswer,
+                            isCheckBox: question.isCheckBox
                         }
                     } else {
                         return {
@@ -46,6 +47,7 @@ const quizSlice = createSlice({
                             questionText: action.payload.question,
                             options: action.payload.options,
                             isFetched: true,
+                            isCheckBox: action.payload.isCheckBox
                         }
                     }
                     return question;
@@ -60,10 +62,26 @@ const quizSlice = createSlice({
             answerQuestion: (state, action) => {
                 state.questions = state.questions.map(question => {
                     if (question.questionId === action.payload.questionId) {
-                        return {
-                            ...question,
-                            selectedAnswers: [action.payload.answer],
-                            isAttended: true,
+                        if (question.isCheckBox) {
+                            if(question.selectedAnswers.includes(action.payload.answer)){
+                                return {
+                                    ...question,
+                                    selectedAnswers: question.selectedAnswers.filter(item => item !== action.payload.answer),
+                                    isAttended: true,
+                                }
+                            } else {
+                                return {
+                                    ...question,
+                                    selectedAnswers: [...question.selectedAnswers, action.payload.answer],
+                                    isAttended: true,
+                                }
+                            }
+                        } else {
+                            return {
+                                ...question,
+                                selectedAnswers: [action.payload.answer],
+                                isAttended: true,
+                            }
                         }
                     }
                     return question;

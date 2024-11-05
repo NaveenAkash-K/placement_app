@@ -1,28 +1,33 @@
 import styles from "./courseContentPage.module.css"
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import {courseContent} from "../../data/courseContent";
 import courseCard from "../../components/student/CourseCard";
-import {useEffect} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useSelector} from "react-redux";
+import completeSectionAPI from "../../apis/completeSectionAPI";
 
 const CourseContentPage = () => {
     const params = useParams();
-    const {courseId} = params;
+    const {sectionNumber} = params;
+    const courseId = params.courseId.toUpperCase();
     const courseData = courseContent.filter(item => item.courseId === courseId)[0];
-    const sectionNumber = params.sectionNumber;
+    const bottomReachedRef = useRef(false);
     const completedSections = useSelector(state => state.courses.registeredCourses).filter(item => item.course.courseId === courseId)[0].completedSections;
 
     useEffect(() => {
-        const handleScroll = () => {
-            const bottom =
-                window.innerHeight + window.scrollY >= document.documentElement.scrollHeight;
-            if (bottom && !completedSections[sectionNumber]) {
-                // Complete Section API
-            }
-        };
+        if (localStorage.getItem("role") === "student") {
+            const handleScroll = async () => {
+                const bottom =
+                    window.innerHeight + window.scrollY >= document.documentElement.scrollHeight;
+                if (bottom && !completedSections[sectionNumber] && !bottomReachedRef.current) {
+                    bottomReachedRef.current = true;
+                    await completeSectionAPI(courseId, sectionNumber)
+                }
+            };
 
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
+            window.addEventListener("scroll", handleScroll);
+            return () => window.removeEventListener("scroll", handleScroll);
+        }
     }, []);
 
     return <div className={styles.courseContentPage}>
