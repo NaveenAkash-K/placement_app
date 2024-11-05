@@ -16,6 +16,7 @@ export const courseContent = [
             desc: "About section About section About section About section"
         }, {
             type: "quiz",
+            isFinal: false,
             name: "Quiz",
             desc: "About quiz About quiz About quiz About quiz"
         }, {
@@ -31,7 +32,8 @@ export const courseContent = [
             name: "Section 7",
             desc: "About section About section About section About section"
         }, {
-            type: "final quiz",
+            type: "quiz",
+            isFinal: true,
             name: "Final Quiz",
             desc: "About final quiz About final quiz About final quiz About final quiz"
         },],
@@ -117,6 +119,7 @@ export const courseContent = [
             desc: "About section About section About section About section"
         }, {
             type: "quiz",
+            isFinal: false,
             name: "Quiz",
             desc: "About quiz About quiz About quiz About quiz"
         }, {
@@ -132,7 +135,8 @@ export const courseContent = [
             name: "Section 7",
             desc: "About section About section About section About section"
         }, {
-            type: "final quiz",
+            type: "quiz",
+            isFinal: true,
             name: "Final Quiz",
             desc: "About final quiz About final quiz About final quiz About final quiz"
         },],
@@ -182,6 +186,7 @@ export const courseContent = [
             desc: "About section About section About section About section"
         }, {
             type: "quiz",
+            isFinal: false,
             name: "Quiz",
             desc: "About quiz About quiz About quiz About quiz"
         }, {
@@ -197,7 +202,8 @@ export const courseContent = [
             name: "Section 7",
             desc: "About section About section About section About section"
         }, {
-            type: "final quiz",
+            type: "quiz",
+            isFinal: true,
             name: "Final Quiz",
             desc: "About final quiz About final quiz About final quiz About final quiz"
         },],
@@ -247,6 +253,7 @@ export const courseContent = [
             desc: "About section About section About section About section"
         }, {
             type: "quiz",
+            isFinal: false,
             name: "Quiz",
             desc: "About quiz About quiz About quiz About quiz"
         }, {
@@ -262,7 +269,8 @@ export const courseContent = [
             name: "Section 7",
             desc: "About section About section About section About section"
         }, {
-            type: "final quiz",
+            type: "quiz",
+            isFinal: true,
             name: "Final Quiz",
             desc: "About final quiz About final quiz About final quiz About final quiz"
         },],
@@ -312,6 +320,7 @@ export const courseContent = [
             desc: "About section About section About section About section"
         }, {
             type: "quiz",
+            isFinal: false,
             name: "Quiz",
             desc: "About quiz About quiz About quiz About quiz"
         }, {
@@ -327,7 +336,8 @@ export const courseContent = [
             name: "Section 7",
             desc: "About section About section About section About section"
         }, {
-            type: "final quiz",
+            type: "quiz",
+            isFinal: true,
             name: "Final Quiz",
             desc: "About final quiz About final quiz About final quiz About final quiz"
         },],
@@ -377,6 +387,7 @@ export const courseContent = [
             desc: "About section About section About section About section"
         }, {
             type: "quiz",
+            isFinal: false,
             name: "Quiz",
             desc: "About quiz About quiz About quiz About quiz"
         }, {
@@ -392,7 +403,8 @@ export const courseContent = [
             name: "Section 7",
             desc: "About section About section About section About section"
         }, {
-            type: "final quiz",
+            type: "quiz",
+            isFinal: true,
             name: "Final Quiz",
             desc: "About final quiz About final quiz About final quiz About final quiz"
         },],
@@ -442,6 +454,7 @@ export const courseContent = [
             desc: "About section About section About section About section"
         }, {
             type: "quiz",
+            isFinal: false,
             name: "Quiz",
             desc: "About quiz About quiz About quiz About quiz"
         }, {
@@ -457,7 +470,8 @@ export const courseContent = [
             name: "Section 7",
             desc: "About section About section About section About section"
         }, {
-            type: "final quiz",
+            type: "quiz",
+            isFinal: true,
             name: "Final Quiz",
             desc: "About final quiz About final quiz About final quiz About final quiz"
         },],
@@ -507,6 +521,7 @@ export const courseContent = [
             desc: "About section About section About section About section"
         }, {
             type: "quiz",
+            isFinal: false,
             name: "Quiz",
             desc: "About quiz About quiz About quiz About quiz"
         }, {
@@ -522,7 +537,8 @@ export const courseContent = [
             name: "Section 7",
             desc: "About section About section About section About section"
         }, {
-            type: "final quiz",
+            type: "quiz",
+            isFinal: true,
             name: "Final Quiz",
             desc: "About final quiz About final quiz About final quiz About final quiz"
         },],
@@ -572,6 +588,7 @@ export const courseContent = [
             desc: "About section About section About section About section"
         }, {
             type: "quiz",
+            isFinal: false,
             name: "Quiz",
             desc: "About quiz About quiz About quiz About quiz"
         }, {
@@ -587,7 +604,8 @@ export const courseContent = [
             name: "Section 7",
             desc: "About section About section About section About section"
         }, {
-            type: "final quiz",
+            type: "quiz",
+            isFinal: true,
             name: "Final Quiz",
             desc: "About final quiz About final quiz About final quiz About final quiz"
         },],
@@ -637,6 +655,7 @@ export const courseContent = [
             desc: "About section About section About section About section"
         }, {
             type: "quiz",
+            isFinal: false,
             name: "Quiz",
             desc: "About quiz About quiz About quiz About quiz"
         }, {
@@ -652,7 +671,8 @@ export const courseContent = [
             name: "Section 7",
             desc: "About section About section About section About section"
         }, {
-            type: "final quiz",
+            type: "quiz",
+            isFinal: true,
             name: "Final Quiz",
             desc: "About final quiz About final quiz About final quiz About final quiz"
         },],

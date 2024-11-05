@@ -11,7 +11,6 @@ const CourseContent = () => {
     // const {courseId} = params;
     const courseId = "CS101";
     const courseData = courseContent.filter(item => item.courseId === courseId)[0];
-    console.log(courseData)
     const navigate = useNavigate();
 
     return <div className={styles.courseContent}>
@@ -64,17 +63,6 @@ const CourseContent = () => {
                                                       toast("Only students can take quiz", {type: "warning"})
                                                   }}
                         />
-                    else if (section.type === "final quiz")
-                        return <CourseSectionCard completed={false}
-                                                  allowed={true}
-                                                  statusText={"Q"}
-                                                  title={section.name}
-                                                  desc={section.desc}
-                                                  sectionNumber={index}
-                                                  onClick={() => {
-                                                      toast("Only students can take quiz", {type: "warning"})
-                                                  }}
-                        />
                     else
                         return <CourseSectionCard completed={false}
                                                   allowed={true}
@@ -83,7 +71,7 @@ const CourseContent = () => {
                                                   desc={section.desc}
                                                   sectionNumber={index}
                                                   onClick={() => {
-                                                      navigate("./" + index);
+                                                      navigate("./sections/" + index);
                                                   }}
 
                         />

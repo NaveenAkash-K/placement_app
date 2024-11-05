@@ -3,24 +3,28 @@ import {IoMdCheckmarkCircleOutline, IoMdCloseCircleOutline} from "react-icons/io
 import {useEffect, useLayoutEffect, useState} from "react";
 import calculateResult from "../../apis/calculateResult";
 import {useParams} from "react-router-dom";
+import completeSectionAPI from "../../apis/completeSectionAPI";
+import {courseContent} from "../../data/courseContent";
 
-const TestResultPage = ({
-                            studentName = "Naveen",
-                            courseTitle = "Introduction to C Programming",
-                            score = "7/10",
-                            passed = true
-                        }) => {
+const TestResultPage = () => {
     const params = useParams();
     const {courseId, sectionNumber} = params;
     const [resultResponse, setResultResponse] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const courseData = courseContent.filter(item => item.courseId === courseId)[0];
+    const quizIsFinal = courseData.sections[sectionNumber - 1].isFinal;
+
+
     useEffect(() => {
         const callAPI = async () => {
             // const response = await calculateResult(courseId, sectionNumber)
             setIsLoading(true)
             const response = await calculateResult("CS101", 1)
             setResultResponse(response.data);
-            setIsLoading(false)
+            setIsLoading(false);
+            if (response.data.sessionResults[response.data.sessionResults.length - 1].hasPassed) {
+                await completeSectionAPI(courseId, sectionNumber)
+            }
         }
         callAPI();
     }, []);
@@ -31,39 +35,40 @@ const TestResultPage = ({
                 style={{display: "flex", justifyContent: "center", alignItems: "center", width: "100vw", height: "90vh"}}>
                 ...Loading
             </div> :
-            <div className={`${styles.testResultPage} ${passed ? styles.passBackground : styles.failBackground}`}>
+            <div
+                className={`${styles.testResultPage} ${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed ? styles.passBackground : styles.failBackground}`}>
                 <div className={styles.content}>
-                    {passed ? (
+                    {resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed ? (
                         <IoMdCheckmarkCircleOutline className={styles.passIcon} size={120}/>
                     ) : (
                         <IoMdCloseCircleOutline className={styles.failIcon} size={120}/>
                     )}
                     <div className={styles.textDiv}>
-                        <p className={styles.courseTitleText}>{courseTitle}</p>
+                        <p className={styles.courseTitleText}>{courseData.courseName}</p>
                         <p className={styles.congratsText}>
-                            {passed ? `🎉 Congratulations, ${studentName}! 🎉` : `😞 Sorry, ${studentName}.`}
+                            {resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed ? `🎉 Congratulations, ${localStorage.getItem("username")}! 🎉` : `😞 Sorry, ${localStorage.getItem("username")}.`}
                         </p>
                         <p className={styles.successText}>
-                            {passed ? "You have successfully passed the test." : "You did not pass the test this time."}
+                            {resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed ? "You have successfully passed the test." : "You did not pass the test this time."}
                         </p>
                     </div>
                     <br/>
-                    <h2 className={`${styles.scoreText} ${passed ? styles.passScore : styles.failScore}`}>
-                        {passed ? `Your Score: ${score}` : `Your Score: ${score}`}
+                    <h2 className={`${styles.scoreText} ${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed ? styles.passScore : styles.failScore}`}>
+                        {resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed ? `Your Score: ${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].correctAnswers}/${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].totalQuestions}` : `Your Score: ${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].correctAnswers}/${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].totalQuestions}`}
                     </h2>
                     <p className={styles.encouragementText}>
-                        {passed
+                        {resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed
                             ? "Keep up the great work and aim even higher in future tests!"
                             : "Don't worry! Study a bit more and give it another try.\n Please contact the admin for retest. You need atleast " + resultResponse.cutOff + " % to pass the test"}
                     </p>
-                    {passed &&
+                    {(resultResponse.sessionResults[resultResponse.sessionResults.length - 1].hasPassed && quizIsFinal) &&
                         <p className={styles.encouragementText}>Your certificate will be sent to your email
                             shortly.</p>}
                     <br/>
                     <div className={styles.attemptsContainer}>
                         <h2 className={styles.attemptsText}>Attempts</h2>
                         <table className={styles.table}>
-                            <thead  className={styles.tableHead}>
+                            <thead className={styles.tableHead}>
                             <tr className={styles.tableRow}>
                                 <th className={styles.tableHead}>Status</th>
                                 <th className={styles.tableHead}>Total</th>
@@ -73,7 +78,7 @@ const TestResultPage = ({
                             </tr>
                             </thead>
                             <tbody>
-                            {resultResponse.sessionResults.map(attempts => <tr className={styles.tableRow}>
+                            {resultResponse.sessionResults.reverse().map(attempts => <tr className={styles.tableRow}>
                                 <td className={styles.tableData}>{attempts.hasPassed ?
                                     <IoMdCheckmarkCircleOutline className={styles.passIcon} size={20}/> :
                                     <IoMdCloseCircleOutline className={styles.failIcon} size={20}/>}</td>

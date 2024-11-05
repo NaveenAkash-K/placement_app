@@ -1,5 +1,5 @@
 import styles from "./quizPage.module.css";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {FaRegClock} from "react-icons/fa6";
 import {useDispatch, useSelector} from "react-redux";
 import {
@@ -14,13 +14,17 @@ import loginAPI from "../../apis/loginAPI";
 import answerQuestionAPI from "../../apis/answerQuestionAPI";
 import tabSwitchAPI from "../../apis/tabSwitchAPI";
 import closeSessionAPI from "../../apis/closeSessionAPI";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {IoMdCheckmarkCircleOutline} from "react-icons/io";
 import {toast} from "react-toastify";
 import formatTimer from "../../utils/formatTimer";
 import goFullScreen from "../../utils/goFullscreen";
+import completeSectionAPI from "../../apis/completeSectionAPI";
+import {courseContent} from "../../data/courseContent";
 
 const QuizPage = () => {
+    const params = useParams();
+    const {courseId, sectionNumber} = params;
     const watermarkText = "2021IT0668";
     const selectedQuestion = useSelector(state => state.quiz.selectedQuestion);
     const quizQuestions = useSelector(state => state.quiz.questions);
@@ -35,6 +39,8 @@ const QuizPage = () => {
     const [timer, setTimer] = useState(questionData.time);
     const [isSaveButtonLoading, setIsSaveButtonLoading] = useState(false)
     const [isLoadQuestionLoading, setIsLoadQuestionLoading] = useState(false)
+    const completedSections = useSelector(state => state.courses.registeredCourses).filter(item => item.course.courseId === courseId)[0].completedSections;
+
 
     useEffect(() => {
         clearInterval(intervalId.current);
@@ -80,6 +86,13 @@ const QuizPage = () => {
             document.head.removeChild(style);
         };
     }, [watermarkText]);
+
+    useLayoutEffect(() => {
+        if (quizQuestions.length === 0 || !localStorage.getItem("sessionId")) {
+            navigate("/student/home")
+            return;
+        }
+    }, []);
 
     useEffect(() => {
         const handleWindowBlur = async () => {
@@ -178,6 +191,10 @@ const QuizPage = () => {
     }
 
     return (<div className={styles.quizPage}>
+            <div className={styles.overallTimeContainer}>
+                <h4 className={styles.timeTitle}>Time Left</h4>
+                <p className={styles.timeValue}>01:23:45</p>
+            </div>
             {isEndTestWarningVisible && (
                 <div className={styles.backdrop}>
                     <div className={styles.endTestContent}>
@@ -210,7 +227,8 @@ const QuizPage = () => {
                             <button className={styles.endTestButton} onClick={async () => {
                                 await closeSessionAPI();
                                 localStorage.removeItem("sessionId");
-                                navigate("/student/home")
+                                navigate("/student/course/" + courseId + "/" + sectionNumber + "/quiz/result")
+
                                 setTimeout(() => {
                                     dispatch(clearQuiz())
                                     if (document.fullscreenElement) {
@@ -324,7 +342,18 @@ const QuizPage = () => {
                         <br/>
                         <p className={styles.choose}>Choose the best answer</p>
                         <div className={styles.options}>
-                            {questionData.options.map((option, index) => <div
+                            {questionData.isCheckBox ? questionData.options.map((option, index) => <div
+                                style={questionData.isCompleted ? {cursor: "default"} : {}}
+                                className={`${styles.option} ${questionData.selectedAnswers.includes(option) ? styles.option_active : null}`}
+                                onClick={questionData.isCompleted ?
+                                    null :
+                                    () => {
+                                        dispatch(answerQuestion({questionId: questionData.questionId, answer: option}))
+                                    }}>
+                                <input type={"checkbox"} value={option} name="answer"
+                                       checked={questionData.selectedAnswers.includes(option)}/>
+                                <p className={styles.optionText}>{option}</p>
+                            </div>) : questionData.options.map((option, index) => <div
                                 style={questionData.isCompleted ? {cursor: "default"} : {}}
                                 className={`${styles.option} ${questionData.selectedAnswers.includes(option) ? styles.option_active : null}`}
                                 onClick={questionData.isCompleted ?

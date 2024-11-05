@@ -24,23 +24,6 @@ const StudentPage = () => {
         }
     }, []);
 
-    useEffect(() => {
-
-        const fetchCourses = async () => {
-            setIsLoading(true);
-            try {
-                const response = await getCoursesAPI();
-                dispatch(updateCourses(response.data));
-            } catch (error) {
-                console.error("Error fetching courses:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchCourses();
-    }, [navigate, dispatch]);
-
     return isLoading ? <div style={{
         display: "flex",
         justifyContent: "center",

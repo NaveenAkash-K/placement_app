@@ -63,26 +63,11 @@ const CourseSectionsPage = (props) => {
                                                   sectionNumber={index}
                                                   key={index}
                                                   onClick={() => {
-                                                      if (!(allowedSection > index)) {
-                                                          toast("Please complete the previous sections first", {type: "warning"})
-                                                          return;
-                                                      }
-                                                      navigate("/student/quiz/instructions");
-                                                  }}
-                        />
-                    else if (section.type === "final quiz")
-                        return <CourseSectionCard completed={completedSections[index]}
-                                                  allowed={allowedSection > index}
-                                                  statusText={"Q"}
-                                                  title={section.name}
-                                                  desc={section.desc}
-                                                  sectionNumber={index}
-                                                  onClick={() => {
-                                                      if (!(allowedSection > index)) {
-                                                          toast("Please complete the previous sections first", {type: "warning"})
-                                                          return;
-                                                      }
-                                                      navigate("/student/quiz");
+                                                      // if (!(allowedSection > index)) {
+                                                      //     toast("Please complete the previous sections first", {type: "warning"})
+                                                      //     return;
+                                                      // }
+                                                      navigate("/student/course/" + courseId + "/" + (index + 1) + "/quiz/instructions");
                                                   }}
                         />
                     else

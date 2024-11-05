@@ -1,11 +1,12 @@
 import styles from "./testInstructionsPage.module.css"
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useRef, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import registerSessionAPI from "../../apis/registerSessionAPI";
 import {initializeQuestions, updateSelectedQuestion} from "../../store/quizSlice";
 import formatTimer from "../../utils/formatTimer";
 import goFullScreen from "../../utils/goFullscreen";
+import {toast} from "react-toastify";
 
 const TestInstructionsPage = () => {
     const watermarkText = "2021IT0668"; // You can make this dynamic if needed
@@ -13,6 +14,9 @@ const TestInstructionsPage = () => {
     const [timer, setTimer] = useState(5);
     const [canStartTest, setCanStartTest] = useState(false);
     const intervalId = useRef(null);
+    const params = useParams();
+    const {courseId, sectionNumber} = params;
+
 
     useEffect(() => {
         if (timer === 0) {
@@ -57,12 +61,16 @@ const TestInstructionsPage = () => {
     const navigate = useNavigate();
 
     const startTest = async () => {
-        goFullScreen();
-        const response = await registerSessionAPI("CS101", 1);
-        localStorage.setItem("sessionId", response.data.session.sessionId)
-        dispatch(initializeQuestions(response.data.questions))
-        dispatch(updateSelectedQuestion(0))
-        navigate("/student/quiz")
+        try {
+            const response = await registerSessionAPI("CS101", 1);
+            goFullScreen();
+            localStorage.setItem("sessionId", response.data.session.sessionId)
+            dispatch(initializeQuestions(response.data.questions))
+            dispatch(updateSelectedQuestion(0))
+            navigate("/student/course/" + courseId + "/" + sectionNumber + "/quiz")
+        } catch (e) {
+            toast(e.response.data.message, {type:"warning"})
+        }
     }
 
     return <div className={styles.testInstructionsPage}>
@@ -196,7 +204,7 @@ const TestInstructionsPage = () => {
             You can start test in: <strong className={styles.remainingTimeText}>{formatTimer(timer)}</strong>
         </div>
         <button onClick={canStartTest ? startTest : null}
-                style={canStartTest ? {} : {cursor:"default"}}
+                style={canStartTest ? {} : {cursor: "default"}}
                 className={`${styles.startTestButton} ${!canStartTest ? styles.disabled : ""}`}>Start Test
         </button>
     </div>

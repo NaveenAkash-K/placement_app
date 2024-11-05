@@ -1,10 +1,11 @@
 import axios from "axios";
 
-const completeSectionAPI = async (courseId, sectionNumber) => {
+const completeSectionAPI = async (courseId, sectionId) => {
     try {
-        return await axios.post("http://localhost:3000/course/", {
+        return await axios.patch("http://localhost:3000/course/enrollments", {
             courseId,
-            sectionNumber
+            sectionId,
+            userId: localStorage.getItem("userId"),
         }, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("jwtToken")}`

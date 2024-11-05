@@ -4,6 +4,7 @@
 
 .headerAndTabContainer {
     text-align: center;
+    position: relative;
 }
 
 .headerCourseName{
@@ -26,7 +27,11 @@
 }
 
 .tab {
+    height: 100%;
     width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
     cursor: pointer;
     font-weight: bold;
@@ -41,7 +46,7 @@
 
 .tabIndicatorContainer {
     position: absolute;
-    width: 50%;
+    width: 25%;
     background-color: rgba(174, 203, 255, 0.27);
     height: 100%;
     z-index: -1;
