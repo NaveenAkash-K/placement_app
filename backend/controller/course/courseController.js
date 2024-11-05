@@ -41,39 +41,58 @@ router.get("/:email", async (req, res) => {
   }
 });
 
-router.post("/register", async(req,res) => {
+router.post("/register", async (req, res) => {
   const { courseId } = req.body;
 
-  try{
+  try {
+    // TODO: check for already existing enrollment
     console.log(req.body.USER_email);
-    const user = await User.findOne({ email: req.body.USER_email });
-    if(!user){
-      return res.status(404).json({message:"User not found"});
+    // const user = await User.findOne({ email: req.body.USER_email });
+    // TODO: check for user with uid
+    const user = await User.findOne({ email: "student@example.com" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
     const course = await Course.findOne({ courseId });
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
+
     console.log(user);
     console.log(course);
 
-     const enrollment = new Enrollment({
+    const sectionArray = Array.from({ length: course.noOfSections }, (_, i) => {
+      const sectionNo = i + 1;
+      const quizSection = course.quiz.find((q) => q.sectionNo === sectionNo);
+
+      return {
+        sectionNo,
+        isCompleted: false,
+        noOfAttempts: quizSection ? 0 : undefined,
+        reattemptIn: quizSection ? null : undefined,
+        timeTaken: quizSection ? null : undefined,
+        isFinal: quizSection && sectionNo === course.noOfSections,
+      };
+    });
+
+
+    const enrollment = new Enrollment({
       user: user._id,
       course: course._id,
-      intermediaryQuizMarks: [],
-      finalQuizMarks: 0,
-      completedSections: [],
-      isCompleted: false,
+      section: sectionArray
     });
 
     await enrollment.save();
 
-    res.status(201).json({ message: "Enrollment created successfully", enrollment });
-  }catch(error){
-    console.error("Error registering course: ",error);
+    res
+      .status(201)
+      .json({ message: "Enrollment created successfully", enrollment });
+  } catch (error) {
+    console.error("Error registering course: ", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-})
+});
+
 
 router.delete("/enrollments", async (req, res) => {
   try {
@@ -88,23 +107,29 @@ router.delete("/enrollments", async (req, res) => {
 });
 
 router.patch("/enrollments", async (req, res) => {
-  const { courseId, sectionId, userId } = req.body;
+  const { courseId, sectionNo, userId } = req.body;
 
   try {
-    if (!ObjectId.isValid(courseId) || !ObjectId.isValid(userId)) {
+    const courseObjectId = await Course.findOne({ courseId }).select('_id').lean();
+    console.log(courseObjectId);
+    if (!ObjectId.isValid(courseObjectId) || !ObjectId.isValid(userId)) {
       return res.status(404).json("Invalid ObjectId");
     }
 
     const enrollment = await Enrollment.findOneAndUpdate(
       {
-        course: new ObjectId(courseId),
+        course: new ObjectId(courseObjectId),
         user: new ObjectId(userId),
+        "section.sectionNo": sectionNo,
       },
       {
-        $set: { [`completedSections.${sectionId - 1}`]: true },
+        $set: {
+          "section.$.isCompleted": true,
+        },
       },
       { new: true }
-    ); 
+    );
+
     // if (enrollment.completedSections.length <= sectionId) {
     //   const fillArray = Array(
     //     sectionId - enrollment.completedSections.length + 1

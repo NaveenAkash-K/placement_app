@@ -4,7 +4,7 @@
   const enrollmentSchema = new Schema({
     user: {
       type: Schema.Types.ObjectId,
-      ref: "user",  
+      ref: "user",
       required: true,
     },
     course: {
@@ -12,22 +12,34 @@
       ref: "course",
       required: true,
     },
-    intermediaryQuizMarks: {
-      type: [Number],
-      default: [],
-    },
-    finalQuizMarks: {
-      type: Number,
-      default: 0,
-    },
-    completedSections: {
-      type: [Boolean],
-      default: [],
-    },
-    isCompleted: {
-      type: Boolean,
-      default: false,
-    },
+    // isCompleted: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    section: [
+      {
+        sectionNo: {
+          type: Number,
+          required: true,
+        },
+        noOfAttempts: {
+          type: Number,
+        },
+        reattemptIn: {
+          type: Date,
+        },
+        isCompleted: {
+          type: Boolean,
+          default: false,
+        },
+        isFinal: {
+          type: Boolean,
+        },
+        timeTaken: {
+          type: Date,
+        },
+      },
+    ],
   });
 
 

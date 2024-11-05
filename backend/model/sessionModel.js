@@ -21,25 +21,26 @@ const sessionSchema = new Schema({
   },
   questions: [
     {
-        question: {
-            type: Schema.Types.ObjectId,
-            ref:"question",
-            required: true,
-        },
-        userAnswer: [String],
-        isCorrect: Boolean,
-        isFetched: {
-          type: Boolean,
-          default: false,
-        }
-    }
+      question: {
+        type: Schema.Types.ObjectId,
+        ref: "question",
+        required: true,
+      },
+      userAnswer: [String],
+      isCorrect: Boolean,
+      isFetched: {
+        type: Boolean,
+        default: false,
+      },
+      timeTaken: Number,
+    },
   ],
   startTime: {
     type: Date,
     required: true,
   },
   expiryTime: {
-    type: Date,
+    type: Date, 
     required: true,
   },
   isExpired: {
@@ -54,6 +55,32 @@ const sessionSchema = new Schema({
     type: Number,
     default: 0,
     min: 0,
+  },
+  result: {
+    correctAnswers: {
+      type: Number,
+      default: 0,
+    },
+    totalQuestions: {
+      type: Number,
+      default: 0,
+    },
+    cutOff: {
+      type: Number,
+    },
+    scorePercentage: {
+      type: Number,
+      default: 0,
+    },
+    hasPassed: {
+      type: Boolean,
+      default: false,
+    },
+    timeTaken:Number,
+    message: {
+      type: String,
+      default: "",
+    },
   },
 });
 
