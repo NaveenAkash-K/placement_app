@@ -2,7 +2,7 @@ import axios from "axios";
 
 const calculateResultAPI = async (courseId, sectionNo) => {
     try {
-        return await axios.post("http://localhost:3000" + "/quiz/calculate-result", {
+        return await axios.post(process.env.REACT_APP_BACKEND_URI + "/quiz/calculate-result", {
                 courseId,
                 sectionNo: parseInt(sectionNo) + 1,
                 userId: "671598ea1aa659de63af9c64",

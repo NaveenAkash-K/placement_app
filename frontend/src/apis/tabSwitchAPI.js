@@ -2,7 +2,7 @@ import axios from "axios";
 
 const tabSwitchAPI = async () => {
     try {
-        return await axios.patch("http://localhost:3000" + "/quiz/tab-switch", {
+        return await axios.patch(process.env.REACT_APP_BACKEND_URI + "/quiz/tab-switch", {
                 sessionId: localStorage.getItem("sessionId"),
             },
             {

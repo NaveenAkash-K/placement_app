@@ -18,22 +18,31 @@ const CourseContentPage = () => {
                     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (localStorage.getItem("role") === "student") {
-            const handleScroll = async () => {
-                const bottom =
-                    window.innerHeight + window.scrollY >= document.documentElement.scrollHeight;
-                if (bottom && !completedSections[sectionNumber] && !bottomReachedRef.current) {
-                    bottomReachedRef.current = true;
-                    await completeSectionAPI(courseId, sectionNumber)
-                    const response = await getCoursesAPI();
-                    dispatch(updateCourses(response.data));
-                }
-            };
+        const checkAndCompleteSection = async () => {
+            if (!completedSections[sectionNumber]) {
+                await completeSectionAPI(courseId, sectionNumber);
+                const response = await getCoursesAPI();
+                dispatch(updateCourses(response.data));
+            }
+        };
 
+        const handleScroll = async () => {
+            const bottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight;
+            if (bottom && !completedSections[sectionNumber] && !bottomReachedRef.current) {
+                bottomReachedRef.current = true;
+                await checkAndCompleteSection();
+            }
+        };
+
+        // Check on initial render if content height is less than viewport height
+        if (document.documentElement.scrollHeight <= window.innerHeight) {
+            checkAndCompleteSection();
+        } else {
             window.addEventListener("scroll", handleScroll);
-            return () => window.removeEventListener("scroll", handleScroll);
         }
-    }, []);
+
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [dispatch, courseId, sectionNumber, completedSections]);
 
     return <div className={styles.courseContentPage}>
         <div className={styles.header}>

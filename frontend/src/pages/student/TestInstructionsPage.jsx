@@ -18,7 +18,7 @@ const TestInstructionsPage = () => {
     const params = useParams();
     const {courseId, sectionNumber} = params;
     const isFinalQuiz = courseContent.filter(course => course.courseId === courseId)[0].sections[sectionNumber].isFinal;
-
+    const [isStartQuizLoading, setIsStartQuizLoading] = useState(false);
 
     useEffect(() => {
         if (timer === 0) {
@@ -64,6 +64,7 @@ const TestInstructionsPage = () => {
 
     const startTest = async () => {
         try {
+            setIsStartQuizLoading(true)
             const response = await registerSessionAPI(courseId, sectionNumber, isFinalQuiz);
             goFullScreen();
             localStorage.setItem("sessionId", response.data.session.sessionId)
@@ -71,7 +72,9 @@ const TestInstructionsPage = () => {
             dispatch(updateSelectedQuestion(0))
             navigate("/student/course/" + courseId + "/" + sectionNumber + "/quiz")
         } catch (e) {
-            toast(e.response.data.message, {type:"warning"})
+            toast(e.response.data.message, {type: "warning"})
+        } finally {
+            setIsStartQuizLoading(false)
         }
     }
 
@@ -205,9 +208,9 @@ const TestInstructionsPage = () => {
         <div className={styles.remainingTimeContainer}>
             You can start test in: <strong className={styles.remainingTimeText}>{formatTimer(timer)}</strong>
         </div>
-        <button onClick={canStartTest ? startTest : null}
+        <button onClick={canStartTest ? isStartQuizLoading ? null : startTest : null}
                 style={canStartTest ? {} : {cursor: "default"}}
-                className={`${styles.startTestButton} ${!canStartTest ? styles.disabled : ""}`}>Start Test
+                className={`${styles.startTestButton} ${!canStartTest ? styles.disabled : ""}`}>{ isStartQuizLoading ? "Loading..." : "Start Test"}
         </button>
     </div>
 }

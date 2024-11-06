@@ -2,7 +2,7 @@ import axios from "axios";
 
 const loginAPI = async (email, password) => {
     try {
-        return await axios.post("http://localhost:3000" + "/auth/login", {
+        return await axios.post(process.env.REACT_APP_BACKEND_URI + "/auth/login", {
             email,
             password
         })

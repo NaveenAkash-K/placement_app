@@ -48,6 +48,7 @@ const QuizPage = () => {
     const [overallTimer, setOverallTimer] = useState(remainingSeconds);
     const [isSaveButtonLoading, setIsSaveButtonLoading] = useState(false)
     const [isLoadQuestionLoading, setIsLoadQuestionLoading] = useState(false)
+    const [isEndTestLoading, setIsEndTestLoading] = useState(false)
     const completedSections = useSelector(state => state.courses.registeredCourses).filter(item => item.course.courseId === courseId)[0].section.filter(item => item.isCompleted);
 
 
@@ -65,6 +66,9 @@ const QuizPage = () => {
             clearInterval(questionIntervalId.current);
             answerQuestionAPI(questionData.questionId, questionData.selectedAnswers, questionData.time).then(res => {
                 dispatch(completeQuestion({questionId: questionData.questionId}));
+            }).catch(e => {
+                toast(e.response.data.message, {type: "error"});
+            }).finally(() => {
                 setIsSaveButtonLoading(false)
             })
         }
@@ -79,8 +83,11 @@ const QuizPage = () => {
             clearInterval(overallTimer.current);
             answerQuestionAPI(questionData.questionId, questionData.selectedAnswers, questionData.time).then(res => {
                 dispatch(completeQuestion({questionId: questionData.questionId}));
-                setIsSaveButtonLoading(false)
                 onEndTest()
+            }).catch(e => {
+                toast(e.response.data.message, {type: "error"});
+            }).finally(() => {
+                setIsSaveButtonLoading(false)
             })
         }
     }, [overallTimer]);
@@ -197,37 +204,54 @@ const QuizPage = () => {
     }
 
     const loadQuestion = async () => {
-        setIsLoadQuestionLoading(true)
-        const response = await fetchQuestionAPI(questionData.questionId);
-        dispatch(updateQuestion(response.data.question))
-        startTimer();
-        setIsLoadQuestionLoading(false)
+        try {
+            setIsLoadQuestionLoading(true)
+            const response = await fetchQuestionAPI(questionData.questionId);
+            dispatch(updateQuestion(response.data.question))
+            startTimer();
+        } catch (e) {
+            toast(e.response.data.message, {type: "error"});
+        } finally {
+            setIsLoadQuestionLoading(false)
+        }
     }
 
     const onSaveButton = async () => {
-        clearInterval(questionIntervalId.current);
-        if (questionData.isCompleted && selectedQuestion + 1 < quizQuestions.length) {
-            dispatch(updateSelectedQuestion(selectedQuestion + 1))
-        }
-        if (questionData.selectedAnswers.length === 0 && !questionData.isCompleted) {
-            toast("Please select any option", {type: "warning"})
-            return;
-        }
-        setIsSaveButtonLoading(true);
-        await answerQuestionAPI(questionData.questionId, questionData.selectedAnswers, questionData.time - timer);
-        dispatch(completeQuestion({questionId: questionData.questionId}))
-        setIsSaveButtonLoading(false);
-        if (selectedQuestion + 1 < quizQuestions.length) {
-            dispatch(updateSelectedQuestion(selectedQuestion + 1))
-        } else {
-            setIsEndTestWarningVisible(true);
+        try {
+            clearInterval(questionIntervalId.current);
+            if (questionData.isCompleted && selectedQuestion + 1 < quizQuestions.length) {
+                dispatch(updateSelectedQuestion(selectedQuestion + 1))
+            }
+            if (questionData.selectedAnswers.length === 0 && !questionData.isCompleted) {
+                toast("Please select any option", {type: "warning"})
+                return;
+            }
+            setIsSaveButtonLoading(true);
+            await answerQuestionAPI(questionData.questionId, questionData.selectedAnswers, questionData.time - timer);
+            dispatch(completeQuestion({questionId: questionData.questionId}))
+            if (selectedQuestion + 1 < quizQuestions.length) {
+                dispatch(updateSelectedQuestion(selectedQuestion + 1))
+            } else {
+                setIsEndTestWarningVisible(true);
+            }
+        } catch (e) {
+            toast(e.response.data.message, {type: "error"});
+        } finally {
+            setIsSaveButtonLoading(false);
         }
     }
 
     const onEndTest = async () => {
-        await closeSessionAPI(isFinalQuiz, 600 - overallTimer);
-        localStorage.removeItem("sessionId");
-        navigate("/student/course/" + courseId + "/" + sectionNumber + "/quiz/result")
+        try {
+            setIsEndTestLoading(true);
+            await closeSessionAPI(isFinalQuiz, 600 - overallTimer);
+            localStorage.removeItem("sessionId");
+            navigate("/student/course/" + courseId + "/" + sectionNumber + "/quiz/result")
+        } catch (e) {
+            toast(e.response.data.message, {type: "error"});
+        } finally {
+            setIsEndTestLoading(false)
+        }
 
         setTimeout(() => {
             dispatch(clearQuiz())
@@ -288,8 +312,8 @@ const QuizPage = () => {
                             <button className={styles.cancelButton} onClick={() => setIsEndTestWarningVisible(false)}>
                                 Continue Test
                             </button>
-                            <button className={styles.endTestButton} onClick={onEndTest}>
-                                End Test
+                            <button className={styles.endTestButton} onClick={isEndTestLoading ? null : onEndTest}>
+                                {isEndTestLoading ? "Loading..." : "End Test"}
                             </button>
                         </div>
                     </div>
@@ -338,6 +362,10 @@ const QuizPage = () => {
                         return (
                             <div
                                 onClick={() => {
+                                    if (isLoadQuestionLoading || isEndTestLoading || isSaveButtonLoading) {
+                                        toast("Please wait", {type: "warning"})
+                                        return;
+                                    }
                                     if (!questionData.isCompleted && questionData.isFetched) {
                                         toast("Please save the answer before leaving", {type: "warning"})
                                         return;
