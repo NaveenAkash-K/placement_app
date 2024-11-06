@@ -5,10 +5,13 @@ const crypto = require("crypto");
 const { ObjectId } = mongoose.Types;
 const { v4: uuidv4 } = require("uuid");
 const Question = require("../../model/questionModel");
+const User = require("../../model/userModel");
 const Session = require("../../model/sessionModel");
 const Course = require("../../model/courseModel");
+const Enrollment = require("../../model/enrollmentModel");
 const { validate } = require("../../model/courseModel");
 const { log } = require("console");
+const { userInfo } = require("os");
 
 const shuffleArray = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -37,10 +40,15 @@ function generateFingerprint(req) {
 }
 
 router.post("/new-questions", async (req, res) => {
-  const { courseId, sectionNo, userId } = req.body;
+  const { courseId, sectionNo, userId, isFinal } = req.body;
+  // isFinal may not be needed here as we are gonna set the reattempt in only if it is not the final quiz, but just in case
 
   try {
     const course = await Course.findOne({ courseId });
+    const enrollment = await Enrollment.findOne({
+      course: new ObjectId(course._id),
+      user: new ObjectId(userId),
+    });
     const quiz = course.quiz.find((q) => q.sectionNo === sectionNo);
     const n = quiz.noOfQuestions;
     const activeSession = await Session.findOne({
@@ -48,14 +56,16 @@ router.post("/new-questions", async (req, res) => {
       courseId: courseId,
       sectionNo: sectionNo,
       isExpired: false,
-    }).populate({
-      path: "questions.question",
-      select: "question options time isCheckBox"
-    }).lean();
+    })
+      .populate({
+        path: "questions.question",
+        select: "question options time isCheckBox",
+      })
+      .lean();
 
     if (activeSession) {
       const questions = activeSession.questions.map((q) => ({
-        question:q.question._id,
+        question: q.question._id,
         text: q.question.question,
         options: q.question.options,
         userAnswer: q.userAnswer,
@@ -65,89 +75,125 @@ router.post("/new-questions", async (req, res) => {
       }));
       return res.json({
         questions,
+        startTime: activeSession.startTime,
         session: {
           sessionId: activeSession.sessionId,
         },
       });
     }
 
-    const previousSessions = await Session.find({
-      userId: userId,
-      courseId: courseId,
-      sectionNo: sectionNo,
-    }).populate("questions.question");
-    console.log(previousSessions.length);
-    // TODO: Decide whether to keep the no of attempts in env
-    if (previousSessions.length >= 2) {
-      return res.status(400).json({ message: "Maximum no of attempts reached" });
-    }
-
-    const previouslyAskedQuestions = previousSessions.flatMap((session) =>
-      session.questions.map((q) => q.question.questionId)
+    const requestedSection = enrollment.section.find(
+      (section) => section.sectionNo === sectionNo
     );
-    console.log(previouslyAskedQuestions);
+    console.log("Enrollment: " + requestedSection);
 
-    let newQuestions = await Question.find({
-      courseId,
-      sectionNo,
-      questionId: { $nin: previouslyAskedQuestions },
-    });
+    // TODO: Decide whether to keep the no of attempts in env
+    console.log(
+      requestedSection.noOfAttempts < 2 ||
+        (requestedSection.reattemptIn < Date.now() && !isFinal)
+    );
+    console.log(requestedSection.reattemptIn != null);
+    if (
+      requestedSection.noOfAttempts < 2 ||
+      (requestedSection.reattemptIn < Date.now() && !isFinal)
+    ) {
+      const previousSessions = await Session.find({
+        userId: userId,
+        courseId: courseId,
+        sectionNo: sectionNo,
+      }).populate("questions.question");
+      console.log(previousSessions.length);
 
-    if (newQuestions.length < n) {
-      const additionalQuestionsNeeded = n - newQuestions.length;
+      const previouslyAskedQuestions = previousSessions.flatMap((session) =>
+        session.questions.map((q) => q.question.questionId)
+      );
+      console.log(previouslyAskedQuestions);
 
-      const additionalQuestions = await Question.find({
+      let newQuestions = await Question.find({
         courseId,
         sectionNo,
-        questionId: { $in: previouslyAskedQuestions },
+        questionId: { $nin: previouslyAskedQuestions },
       });
 
-      const shuffledAdditionalQuestions = shuffleArray(
-        additionalQuestions
-      ).slice(0, additionalQuestionsNeeded);
-      newQuestions = [...newQuestions, ...shuffledAdditionalQuestions];
-    }
+      if (newQuestions.length < n) {
+        const additionalQuestionsNeeded = n - newQuestions.length;
 
-    if (newQuestions.length === 0) {
+        const additionalQuestions = await Question.find({
+          courseId,
+          sectionNo,
+          questionId: { $in: previouslyAskedQuestions },
+        });
+
+        const shuffledAdditionalQuestions = shuffleArray(
+          additionalQuestions
+        ).slice(0, additionalQuestionsNeeded);
+        newQuestions = [...newQuestions, ...shuffledAdditionalQuestions];
+      }
+
+      if (newQuestions.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No questions available for this section." });
+      }
+      const selectedQuestions = shuffleArray(newQuestions).slice(0, n);
+      const randomizedQuestions = selectedQuestions.map((q) => {
+        return {
+          question: q._id,
+          time: q.time,
+        };
+      });
+
+      const session = await Session.create({
+        sessionId: uuidv4(),
+        userId: userId,
+        courseId: courseId,
+        sectionNo: sectionNo,
+        questions: selectedQuestions.map((q) => ({
+          question: q._id,
+        })),
+        ip: req.ip,
+        startTime: new Date(),
+        expiryTime: new Date(Date.now() + 60 * 60 * 1000),
+        isExpired: false,
+      });
+
+      // const sessionToSend = {
+      //   ...session._doc,
+      //   questions: session.questions.map(({ isCorrect, ...rest }) => rest),
+      // }
+
+      res.json({
+        questions: randomizedQuestions,
+        startTime: session.startTime,
+        session: session,
+      });
+    } else if (requestedSection.reattemptIn != null && !isFinal) {
+      return res.json({
+        message:
+          "You are allowed to reattend the quiz on" +
+          requestedSection.reattemptIn,
+      });
+    } else {
       return res
-        .status(404)
-        .json({ message: "No questions available for this section." });
+        .status(403)
+        .json({ message: "Maximum no of attempts reached for the final quiz" });
     }
-
-    const selectedQuestions = shuffleArray(newQuestions).slice(0, n);
-    const randomizedQuestions = selectedQuestions.map((q) => {
-      return {
-        question: q._id,
-        time: q.time
-      };
-    });
-
-    const session = await Session.create({
-      sessionId: uuidv4(),
-      userId: userId,
-      courseId: courseId,
-      sectionNo: sectionNo,
-      questions: selectedQuestions.map((q) => ({
-        question: q._id,
-      })),
-      ip: req.ip,
-      startTime: new Date(),
-      expiryTime: new Date(Date.now() + 60 * 60 * 1000),
-      isExpired: false,
-    });
-
-    // const sessionToSend = {
-    //   ...session._doc,
-    //   questions: session.questions.map(({ isCorrect, ...rest }) => rest),
-    // }
-
-    res.json({ questions: randomizedQuestions, session: session });
   } catch (error) {
     console.error("Error fetching new questions:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
+router.get("/validate-session", async (req, res) => {
+  const { sessionId } = req.body;
+  const session = await Session.findOne({ sessionId });
+  console.log(session);
+  if (!session.isExpired) {
+    console.log(session.isExpired);
+    return res.status(200).json({ message: "Session valid" });
+  }
+  return res.status(404).json({ message: "Session invalid" });
+});
 
 router.post("/fetch-question", async (req, res) => {
   const { sessionId, questionId } = req.body;
@@ -166,16 +212,16 @@ router.post("/fetch-question", async (req, res) => {
     const shuffledOptions = shuffleArray([...question.options]);
 
     await Session.findOneAndUpdate(
-        {
-          sessionId: sessionId,
-          "questions.question": question._id,
+      {
+        sessionId: sessionId,
+        "questions.question": question._id,
+      },
+      {
+        $set: {
+          "questions.$.isFetched": true,
         },
-        {
-          $set: {
-            "questions.$.isFetched": true
-          },
-        },
-        { new: true }
+      },
+      { new: true }
     );
 
     res.json({
@@ -195,7 +241,7 @@ router.post("/fetch-question", async (req, res) => {
 });
 
 router.post("/update-answer", async (req, res) => {
-  const { sessionId, questionId, userAnswer } = req.body;
+  const { sessionId, questionId, timeTaken, userAnswer } = req.body;
 
   try {
     const question = await Question.findById(questionId);
@@ -204,7 +250,7 @@ router.post("/update-answer", async (req, res) => {
     }
 
     const isCorrect = validateAnswer(userAnswer, question.answer);
-    console.log(question+" : "+ isCorrect);
+    console.log(question + " : " + isCorrect);
     console.log(question._id);
     const session = await Session.findOneAndUpdate(
       {
@@ -215,7 +261,7 @@ router.post("/update-answer", async (req, res) => {
         $set: {
           "questions.$.userAnswer": userAnswer,
           "questions.$.isCorrect": isCorrect,
-          "questions.$.isCompleted": true
+          "questions.$.timeTaken": timeTaken,
         },
       },
       { new: true }
@@ -275,56 +321,25 @@ router.post("/calculate-result", async (req, res) => {
         .json({ message: "No session found for this course and section." });
     }
 
-    const course = await Course.findOne({ courseId });
-    if (!course) {
-      return res.status(404).json({ message: "Course not found." });
-    }
-
-    const sectionQuiz = course.quiz.find((q) => q.sectionNo === sectionNo);
-    if (!sectionQuiz) {
-      return res
-        .status(404)
-        .json({ message: "Quiz section not found in course." });
-    }
-
-    const { cutOff, noOfQuestions } = sectionQuiz;
-
-    const sessionResults = sessions.map((session) => {
-      let correctAnswers = 0;
-
-      session.questions.forEach((q) => {
-        if (q.isCorrect) correctAnswers += 1;
-      });
-
-      const scorePercentage = (correctAnswers / noOfQuestions) * 100;
-      const hasPassed = scorePercentage >= cutOff;
-
-      return {
-        sessionId: session.sessionId,
-        correctAnswers,
-        totalQuestions: noOfQuestions,
-        scorePercentage,
-        hasPassed,
-        message: hasPassed
-          ? "User has passed this session quiz!"
-          : "User did not meet the passing criteria for this session.",
-      };
-    });
+    const sessionResults = sessions.map((session) => ({
+      sessionId: session.sessionId,
+      ...session.result,
+    }));
 
     res.json({
       courseId,
       sectionNo,
-      cutOff,
       sessionResults,
     });
   } catch (error) {
-    console.error("Error calculating results:", error);
+    console.error("Error retrieving results:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
 router.post("/close-session", async (req, res) => {
-  const { sessionId } = req.body;
+  const { sessionId, timeTaken, isFinal, userId } = req.body;
+
   try {
     const session = await Session.findOneAndUpdate(
       { sessionId },
@@ -336,13 +351,68 @@ router.post("/close-session", async (req, res) => {
       return res.status(404).json({ message: "Session not found." });
     }
 
-    res.json({ message: "Session closed successfully." });
+    const course = await Course.findOne({ courseId: session.courseId });
+    if (!course) {
+      return res.status(404).json({ message: "Course not found." });
+    }
+
+    const sectionQuiz = course.quiz.find(
+      (q) => q.sectionNo === session.sectionNo
+    );
+    if (!sectionQuiz) {
+      return res
+        .status(404)
+        .json({ message: "Quiz section not found in course." });
+    }
+
+    const { cutOff, noOfQuestions } = sectionQuiz;
+
+    let correctAnswers = 0;
+    session.questions.forEach((q) => {
+      if (q.isCorrect) correctAnswers += 1;
+    });
+
+    const scorePercentage = (correctAnswers / noOfQuestions) * 100;
+    const hasPassed = scorePercentage >= cutOff;
+
+    session.result = {
+      correctAnswers,
+      totalQuestions: noOfQuestions,
+      cutOff,
+      scorePercentage,
+      hasPassed,
+      timeTaken,
+      message: hasPassed
+        ? "User has passed this session quiz!"
+        : "User did not meet the passing criteria for this session.",
+    };
+
+    await session.save();
+    console.log(session.courseId);
+    console.log(session.userId);
+    const enrollment = await Enrollment.findOne({
+      course: new ObjectId(course._id),
+      user: new ObjectId(userId),
+    });
+
+    const attendedSection = enrollment.section.find((section) => section.sectionNo === session.sectionNo)
+    attendedSection.noOfAttempts++;
+    if(!hasPassed && attendedSection.noOfAttempts >= 2 && !isFinal){
+      attendedSection.reattemptIn = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    } else if(hasPassed){
+      attendedSection.isCompleted = true
+    }
+
+    await enrollment.save();
+
+    res.json({
+      message: "Session closed and result calculated successfully.",
+      result: session.result,
+    });
   } catch (error) {
     console.error("Error closing session:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-
-
 
 module.exports = router;
