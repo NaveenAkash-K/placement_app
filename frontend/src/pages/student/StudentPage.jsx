@@ -41,7 +41,7 @@ const StudentPage = () => {
                 return <CourseCard courseName={course.course.courseName}
                                    key={course.course.courseId}
                                    courseId={course.course.courseId}
-                                   completePercent={(course.completedSections.length / courseData.sections.length) * 100}
+                                   completePercent={(course.section.filter(item => item.isCompleted).length / courseData.sections.length) * 100}
                                    sections={courseData.sections.length}/>
             })}
         </div>

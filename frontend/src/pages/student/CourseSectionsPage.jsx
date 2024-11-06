@@ -14,7 +14,7 @@ const CourseSectionsPage = (props) => {
     const {courseId} = params;
     const courseData = courseContent.filter(item => item.courseId === courseId)[0];
     const registeredCourses = useSelector(state => state.courses.registeredCourses)
-    const completedSections = registeredCourses.filter(item => item.course.courseId === params.courseId)[0].completedSections;
+    const completedSections = registeredCourses.filter(item => item.course.courseId === params.courseId)[0].section.filter(item => item.isCompleted)
     const allowedSection = completedSections.length + 1;
     const navigate = useNavigate();
 
@@ -69,11 +69,15 @@ const CourseSectionsPage = (props) => {
                                                   sectionNumber={index}
                                                   key={index}
                                                   onClick={() => {
-                                                      // if (!(allowedSection > index)) {
-                                                      //     toast("Please complete the previous sections first", {type: "warning"})
-                                                      //     return;
-                                                      // }
-                                                      navigate("/student/course/" + courseId + "/" + (index + 1) + "/quiz/instructions");
+                                                      if(completedSections[index]) {
+                                                          navigate("/student/course/" + courseId + "/" + (index) + "/quiz/result");
+                                                          return;
+                                                      }
+                                                      if (!(allowedSection > index)) {
+                                                          toast("Please complete the previous sections first", {type: "warning"})
+                                                          return;
+                                                      }
+                                                      navigate("/student/course/" + courseId + "/" + (index) + "/quiz/instructions");
                                                   }}
                         />
                     else

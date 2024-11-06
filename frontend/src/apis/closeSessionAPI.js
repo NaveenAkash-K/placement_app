@@ -1,9 +1,12 @@
 import axios from "axios";
 
-const closeSessionAPI = async () => {
+const closeSessionAPI = async (isFinal, timeTaken) => {
     try {
         return await axios.post("http://localhost:3000" + "/quiz/close-session", {
                 sessionId: localStorage.getItem("sessionId"),
+                userId: "671598ea1aa659de63af9c64",
+                timeTaken,
+                isFinal
             },
             {
                 headers: {

@@ -76,8 +76,10 @@ const LoginPage = () => {
                     <div className={styles.loginButton}
                          onClick={isLoading ? () => {
                          } : authenticate}
-                         label="Submit"
                     >{isLoading ? "Loading..." : "Submit"}</div>
+                    <p className={styles.forgetPassword} onClick={()=>{
+                        navigate("/auth/forget-password")
+                    }}>Forget Password</p>
                 </div>
             </div>
         </div>

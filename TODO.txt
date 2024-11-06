@@ -13,3 +13,34 @@ getStatsAPI
         split:[{dept:"", value:""}, ...]
     },
 }
+
+revokeCourseAPI
+allowAttemptAPI
+
+courseId to lowercase
+
+getEnrolledStudents
+getCertificatesObtained
+getAttemptRequests
+
+getCompletedQuizDetails
+{
+    totalQuizes,
+    quizes: [{
+       quizNo or sectionNo,
+       cutOff,
+       isCompleted,
+       attempts:[{
+            totalQuestions,
+            correct,
+            wrong,
+            totalTimeTaken,
+            questions:[{
+                questionText,
+                options,
+                userAnswer,
+                completedIn,
+            }]
+       }]
+    },...]
+}

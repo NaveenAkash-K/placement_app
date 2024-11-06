@@ -1,11 +1,12 @@
 import axios from "axios";
 
-const answerQuestionAPI = async (questionId, userAnswer) => {
+const answerQuestionAPI = async (questionId, userAnswer, timeTaken) => {
     try {
         return await axios.post("http://localhost:3000" + "/quiz/update-answer", {
                 sessionId: localStorage.getItem("sessionId"),
                 questionId,
-                userAnswer
+                userAnswer,
+                timeTaken
             },
             {
                 headers: {

@@ -5,11 +5,13 @@ const quizSlice = createSlice({
         name: 'quiz',
         initialState: {
             selectedQuestion: 0,
+            startTime: null,
             questions: []
         },
         reducers: {
             initializeQuestions: (state, action) => {
-                state.questions = action.payload.map(question => {
+                state.startTime = action.payload.startTime;
+                state.questions = action.payload.questions.map(question => {
                     if (question.isFetched) {
                         return {
                             questionId: question.question,
@@ -97,7 +99,7 @@ const quizSlice = createSlice({
                     }
                     return question;
                 })
-            }
+            },
         }
     })
 ;
@@ -108,7 +110,7 @@ export const {
     initializeQuestions,
     updateSelectedQuestion,
     updateQuestion,
-    completeQuestion
+    completeQuestion,
 } = quizSlice.actions;
 
 export default quizSlice.reducer;

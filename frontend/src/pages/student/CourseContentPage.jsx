@@ -3,8 +3,10 @@ import {useLocation, useParams} from "react-router-dom";
 import {courseContent} from "../../data/courseContent";
 import courseCard from "../../components/student/CourseCard";
 import {useEffect, useRef, useState} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import completeSectionAPI from "../../apis/completeSectionAPI";
+import getCoursesAPI from "../../apis/getCoursesAPI";
+import {updateCourses} from "../../store/coursesSlice";
 
 const CourseContentPage = () => {
     const params = useParams();
@@ -12,7 +14,8 @@ const CourseContentPage = () => {
     const courseId = params.courseId.toUpperCase();
     const courseData = courseContent.filter(item => item.courseId === courseId)[0];
     const bottomReachedRef = useRef(false);
-    const completedSections = useSelector(state => state.courses.registeredCourses).filter(item => item.course.courseId === courseId)[0].completedSections;
+    const completedSections = useSelector(state => state.courses.registeredCourses).filter(item => item.course.courseId === courseId)[0].section.filter(item => item.isCompleted)
+                    const dispatch = useDispatch()
 
     useEffect(() => {
         if (localStorage.getItem("role") === "student") {
@@ -22,6 +25,8 @@ const CourseContentPage = () => {
                 if (bottom && !completedSections[sectionNumber] && !bottomReachedRef.current) {
                     bottomReachedRef.current = true;
                     await completeSectionAPI(courseId, sectionNumber)
+                    const response = await getCoursesAPI();
+                    dispatch(updateCourses(response.data));
                 }
             };
 

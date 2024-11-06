@@ -36,15 +36,23 @@ const QuizPage = () => {
     const [isFullscreenWarningVisible, setIsFullscreenWarningVisible] = useState(false);
     const [isEndTestWarningVisible, setIsEndTestWarningVisible] = useState(false)
     const navigate = useNavigate();
-    const intervalId = useRef(null);
+    const isFinalQuiz = courseContent.filter(course => course.courseId === courseId)[0].sections[sectionNumber].isFinal;
+    const questionIntervalId = useRef(null);
+    const overallIntervalId = useRef(null);
     const [timer, setTimer] = useState(questionData.time);
+    const startTime = useSelector(state => state.quiz.startTime);
+    const startTimestamp = new Date(startTime).getTime();
+    const endTimestamp = startTimestamp + 60 * 60 * 1000; // 1 hour after start time
+    const timeLeft = endTimestamp - Date.now();
+    const remainingSeconds = Math.max(0, Math.floor(timeLeft / 1000)); // Remaining time in seconds
+    const [overallTimer, setOverallTimer] = useState(remainingSeconds);
     const [isSaveButtonLoading, setIsSaveButtonLoading] = useState(false)
     const [isLoadQuestionLoading, setIsLoadQuestionLoading] = useState(false)
-    const completedSections = useSelector(state => state.courses.registeredCourses).filter(item => item.course.courseId === courseId)[0].completedSections;
+    const completedSections = useSelector(state => state.courses.registeredCourses).filter(item => item.course.courseId === courseId)[0].section.filter(item => item.isCompleted);
 
 
     useEffect(() => {
-        clearInterval(intervalId.current);
+        clearInterval(questionIntervalId.current);
         setTimer(questionData.time);
     }, [selectedQuestion]);
 
@@ -54,13 +62,38 @@ const QuizPage = () => {
         }
         if (timer === 0) {
             setIsSaveButtonLoading(true)
-            clearInterval(intervalId.current);
-            answerQuestionAPI(questionData.questionId, questionData.selectedAnswers).then(res => {
+            clearInterval(questionIntervalId.current);
+            answerQuestionAPI(questionData.questionId, questionData.selectedAnswers, questionData.time).then(res => {
                 dispatch(completeQuestion({questionId: questionData.questionId}));
                 setIsSaveButtonLoading(false)
             })
         }
     }, [timer]);
+
+    useEffect(() => {
+        if (overallTimer === 600) {
+            toast("Last 10 Minutes Remaining", {type: "warning"});
+        }
+        if (overallTimer === 0) {
+            setIsSaveButtonLoading(true)
+            clearInterval(overallTimer.current);
+            answerQuestionAPI(questionData.questionId, questionData.selectedAnswers, questionData.time).then(res => {
+                dispatch(completeQuestion({questionId: questionData.questionId}));
+                setIsSaveButtonLoading(false)
+                onEndTest()
+            })
+        }
+    }, [overallTimer]);
+
+    useEffect(() => {
+        clearInterval(overallIntervalId.current);
+        overallIntervalId.current = setInterval(() => {
+            setOverallTimer(prev => prev - 1);
+        }, 1000);
+        return () => {
+            clearInterval(overallIntervalId.current);
+        }
+    }, []);
 
     useEffect(() => {
         // Inject the dynamic watermark content into a style tag
@@ -157,8 +190,8 @@ const QuizPage = () => {
     }, []);
 
     const startTimer = () => {
-        clearInterval(intervalId.current);
-        intervalId.current = setInterval(() => {
+        clearInterval(questionIntervalId.current);
+        questionIntervalId.current = setInterval(() => {
             setTimer(prev => prev - 1);
         }, 1000);
     }
@@ -172,7 +205,7 @@ const QuizPage = () => {
     }
 
     const onSaveButton = async () => {
-        clearInterval(intervalId.current);
+        clearInterval(questionIntervalId.current);
         if (questionData.isCompleted && selectedQuestion + 1 < quizQuestions.length) {
             dispatch(updateSelectedQuestion(selectedQuestion + 1))
         }
@@ -181,7 +214,7 @@ const QuizPage = () => {
             return;
         }
         setIsSaveButtonLoading(true);
-        await answerQuestionAPI(questionData.questionId, questionData.selectedAnswers);
+        await answerQuestionAPI(questionData.questionId, questionData.selectedAnswers, questionData.time - timer);
         dispatch(completeQuestion({questionId: questionData.questionId}))
         setIsSaveButtonLoading(false);
         if (selectedQuestion + 1 < quizQuestions.length) {
@@ -191,10 +224,23 @@ const QuizPage = () => {
         }
     }
 
+    const onEndTest = async () => {
+        await closeSessionAPI(isFinalQuiz, 600 - overallTimer);
+        localStorage.removeItem("sessionId");
+        navigate("/student/course/" + courseId + "/" + sectionNumber + "/quiz/result")
+
+        setTimeout(() => {
+            dispatch(clearQuiz())
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        }, 500)
+    }
+
     return (<div className={styles.quizPage}>
             <div className={styles.overallTimeContainer}>
                 <h4 className={styles.timeTitle}>Time Left</h4>
-                <p className={styles.timeValue}>01:23:45</p>
+                <p className={styles.timeValue}>{formatTimer(overallTimer)}</p>
             </div>
             {isEndTestWarningVisible && (
                 <div className={styles.backdrop}>
@@ -242,18 +288,7 @@ const QuizPage = () => {
                             <button className={styles.cancelButton} onClick={() => setIsEndTestWarningVisible(false)}>
                                 Continue Test
                             </button>
-                            <button className={styles.endTestButton} onClick={async () => {
-                                await closeSessionAPI();
-                                localStorage.removeItem("sessionId");
-                                navigate("/student/course/" + courseId + "/" + sectionNumber + "/quiz/result")
-
-                                setTimeout(() => {
-                                    dispatch(clearQuiz())
-                                    if (document.fullscreenElement) {
-                                        document.exitFullscreen();
-                                    }
-                                }, 500)
-                            }}>
+                            <button className={styles.endTestButton} onClick={onEndTest}>
                                 End Test
                             </button>
                         </div>

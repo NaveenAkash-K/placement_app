@@ -7,6 +7,7 @@ import {initializeQuestions, updateSelectedQuestion} from "../../store/quizSlice
 import formatTimer from "../../utils/formatTimer";
 import goFullScreen from "../../utils/goFullscreen";
 import {toast} from "react-toastify";
+import {courseContent} from "../../data/courseContent";
 
 const TestInstructionsPage = () => {
     const watermarkText = "2021IT0668"; // You can make this dynamic if needed
@@ -16,6 +17,7 @@ const TestInstructionsPage = () => {
     const intervalId = useRef(null);
     const params = useParams();
     const {courseId, sectionNumber} = params;
+    const isFinalQuiz = courseContent.filter(course => course.courseId === courseId)[0].sections[sectionNumber].isFinal;
 
 
     useEffect(() => {
@@ -62,10 +64,10 @@ const TestInstructionsPage = () => {
 
     const startTest = async () => {
         try {
-            const response = await registerSessionAPI("CS101", 1);
+            const response = await registerSessionAPI(courseId, sectionNumber, isFinalQuiz);
             goFullScreen();
             localStorage.setItem("sessionId", response.data.session.sessionId)
-            dispatch(initializeQuestions(response.data.questions))
+            dispatch(initializeQuestions(response.data))
             dispatch(updateSelectedQuestion(0))
             navigate("/student/course/" + courseId + "/" + sectionNumber + "/quiz")
         } catch (e) {

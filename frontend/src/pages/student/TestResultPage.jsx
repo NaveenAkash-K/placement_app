@@ -6,6 +6,10 @@ import {useParams} from "react-router-dom";
 import completeSectionAPI from "../../apis/completeSectionAPI";
 import {courseContent} from "../../data/courseContent";
 import DownloadCertificateButton from "../../components/student/DownloadCertificateButton";
+import getCoursesAPI from "../../apis/getCoursesAPI";
+import {updateCourses} from "../../store/coursesSlice";
+import {useDispatch} from "react-redux";
+import {completeSection} from "../../store/coursesSlice";
 
 const TestResultPage = () => {
     const params = useParams();
@@ -13,20 +17,25 @@ const TestResultPage = () => {
     const [resultResponse, setResultResponse] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const courseData = courseContent.filter(item => item.courseId === courseId)[0];
-    const quizIsFinal = courseData.sections[sectionNumber - 1].isFinal;
+    const quizIsFinal = courseData.sections[sectionNumber].isFinal;
     const [hasPassed, setHasPassed] = useState(null)
+    const dispatch = useDispatch();
+    console.log(courseData.sections.length === parseInt(sectionNumber) + 1)
 
 
     useEffect(() => {
         const callAPI = async () => {
             // const response = await calculateResult(courseId, sectionNumber)
             setIsLoading(true)
-            const response = await calculateResult("CS101", 1)
+            const response = await calculateResult(courseId, sectionNumber)
             setResultResponse(response.data);
             setHasPassed(response.data.sessionResults[response.data.sessionResults.length - 1].hasPassed)
             setIsLoading(false);
             if (response.data.sessionResults[response.data.sessionResults.length - 1].hasPassed) {
                 await completeSectionAPI(courseId, sectionNumber)
+                dispatch(completeSection({courseId, sectionNumber}))
+                const response = await getCoursesAPI();
+                dispatch(updateCourses(response.data));
             }
         }
         callAPI();
@@ -59,8 +68,9 @@ const TestResultPage = () => {
                     <h2 className={`${styles.scoreText} ${hasPassed ? styles.passScore : styles.failScore}`}>
                         {hasPassed ? `Your Score: ${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].correctAnswers}/${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].totalQuestions}` : `Your Score: ${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].correctAnswers}/${resultResponse.sessionResults[resultResponse.sessionResults.length - 1].totalQuestions}`}
                     </h2>
-                    { hasPassed && <DownloadCertificateButton onClick={() => {
-                    }}/>}
+                    {(hasPassed && (courseData.sections.length === parseInt(sectionNumber) + 1)) &&
+                        <DownloadCertificateButton onClick={() => {
+                        }}/>}
                     <br/>
                     <p className={styles.encouragementText}>
                         {hasPassed

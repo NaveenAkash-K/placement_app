@@ -168,9 +168,9 @@ router.post("/new-questions", async (req, res) => {
         session: session,
       });
     } else if (requestedSection.reattemptIn != null && !isFinal) {
-      return res.json({
+      return res.status(400).json({
         message:
-          "You are allowed to reattend the quiz on" +
+          "You are allowed to reattend the quiz on " +
           requestedSection.reattemptIn,
       });
     } else {

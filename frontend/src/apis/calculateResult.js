@@ -4,8 +4,8 @@ const calculateResultAPI = async (courseId, sectionNo) => {
     try {
         return await axios.post("http://localhost:3000" + "/quiz/calculate-result", {
                 courseId,
-                sectionNo,
-                userId: localStorage.getItem("userId"),
+                sectionNo: parseInt(sectionNo) + 1,
+                userId: "671598ea1aa659de63af9c64",
             },
             {
                 headers: {
