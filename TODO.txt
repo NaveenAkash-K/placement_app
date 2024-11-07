@@ -14,7 +14,7 @@ getStatsAPI
     },
 }
 
-getAttemptRequests
+getAttemptRequestsAPI
 revokeCourseAPI
 allowAttemptAPI
 

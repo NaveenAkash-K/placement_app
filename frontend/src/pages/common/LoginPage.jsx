@@ -10,12 +10,14 @@ import {useDispatch} from "react-redux";
 import nav from "../../components/common/Nav";
 import getCoursesAPI from "../../apis/getCoursesAPI";
 import {updateCourses} from "../../store/coursesSlice";
+import forgetPasswordAPI from "../../apis/forgetPasswordAPI";
 
 const LoginPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
+    const [isForgetPasswordLoading, setIsForgetPasswordLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -46,7 +48,7 @@ const LoginPage = () => {
             localStorage.setItem("userId", response.data.userId)
             localStorage.setItem("username", response.data.name)
             localStorage.setItem("email", response.data.email)
-            if(localStorage.getItem("role") === "student"){
+            if (localStorage.getItem("role") === "student") {
                 response = await getCoursesAPI()
                 dispatch(updateCourses(response.data));
             }
@@ -77,8 +79,20 @@ const LoginPage = () => {
                          onClick={isLoading ? () => {
                          } : authenticate}
                     >{isLoading ? "Loading..." : "Submit"}</div>
-                    <p className={styles.forgetPassword} onClick={()=>{
-                        navigate("/auth/forget-password")
+                    <p className={styles.forgetPassword} onClick={async () => {
+                        try {
+                            if (username === undefined || username === null || username.trim().length === 0) {
+                                toast("Please enter your email", {type: "warning"})
+                                return;
+                            }
+                            setIsForgetPasswordLoading(true)
+                            const response = await forgetPasswordAPI(username)
+                            toast(response.data.message, {type: "success"});
+                        } catch (e) {
+                            toast(e.data.message, {type: "error"});
+                        } finally {
+                            setIsForgetPasswordLoading(false)
+                        }
                     }}>Forget Password</p>
                 </div>
             </div>

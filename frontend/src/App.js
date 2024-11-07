@@ -32,7 +32,7 @@ const router = createBrowserRouter([
                 </>
             },
             {
-                path: "forget-password",
+                path: "forget-password/:token",
                 element: <>
                     <Nav/>
                     <ForgetPasswordPage/>
@@ -123,7 +123,9 @@ function App() {
 
 
     useEffect(() => {
-        if (!localStorage.getItem("jwtToken")) {
+        if (!localStorage.getItem("jwtToken") && !router.state.location.pathname.startsWith("/auth/forget-password")) {
+            console.log("Hello")
+            console.log(router.state.location.pathname)
             router.navigate("/auth/login");
             return;
         }
