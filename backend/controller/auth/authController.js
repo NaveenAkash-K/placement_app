@@ -85,7 +85,7 @@ router.post("/forgotPassword", async (req, res) => {
 
     const resetURL = `${process.env.RESET_PASS_BASE_URL}${token}`;
     console.log(resetURL);
-    
+
     const mailOptions = {
       from: process.env.EMAIL,
       to: user.email,
@@ -119,15 +119,48 @@ router.get("/resetPassword/:token", async (req, res) => {
 
     await PasswordResetToken.findByIdAndDelete(resetToken._id);
 
-    res.status(200).json({ message: "Token is valid", userId: resetToken.userId });
+    res
+      .status(200)
+      .json({ message: "Token is valid", userId: resetToken.userId });
   } catch (error) {
     console.error("Error verifying reset token:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
+router.post("/updatePassword", async (req, res) => {
+  try {
+    const { email, currentPassword, newPassword } = req.body;
 
-module.exports = router;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
+    const isValidPassword = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+    if (!isValidPassword) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 12);
+    
+    if (currentPassword != newPassword) {
+      user.password = hashedNewPassword;
+      await user.save();
+    } else {
+      return res.status(400).json({
+        message: "New password cannot be the same as the current password",
+      });
+    }
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 module.exports = router;
