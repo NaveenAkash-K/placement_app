@@ -167,7 +167,7 @@ router.post("/new-questions", async (req, res) => {
         startTime: session.startTime,
         session: session,
       });
-    } else if (requestedSection.reattemptIn != null && !isFinal) {
+    } else if (requestedSection.reattemptIn > Date.now() && !isFinal) {
       return res.status(400).json({
         message:
           "You are allowed to reattend the quiz on " +
