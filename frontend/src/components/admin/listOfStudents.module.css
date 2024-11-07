@@ -55,7 +55,11 @@
 
 .certificateButton{
     /*padding: 0.5rem 1rem;*/
-    font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    /*font-size: 0.9rem;*/
     color: #3c4043;
     font-weight: bold;
     border: none;

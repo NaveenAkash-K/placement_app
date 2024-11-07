@@ -2,7 +2,7 @@ import axios from "axios";
 
 const fetchQuestionAPI = async (questionId) => {
     try {
-        return await axios.post("http://localhost:3000" + "/quiz/fetch-question", {
+        return await axios.post(process.env.REACT_APP_BACKEND_URI + "/quiz/fetch-question", {
                 sessionId: localStorage.getItem("sessionId"),
                 questionId
             },

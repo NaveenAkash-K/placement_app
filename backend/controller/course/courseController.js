@@ -110,24 +110,22 @@ router.patch("/enrollments", async (req, res) => {
   const { courseId, sectionNo, userId } = req.body;
 
   try {
-    const courseObjectId = await Course.findOne({ courseId }).select('_id').lean();
-    console.log(courseObjectId);
-    if (!ObjectId.isValid(courseObjectId) || !ObjectId.isValid(userId)) {
-      return res.status(404).json("Invalid ObjectId");
-    }
+    const course = await Course.findOne({ courseId });
+    console.log(course);
+
 
     const enrollment = await Enrollment.findOneAndUpdate(
-      {
-        course: new ObjectId(courseObjectId),
-        user: new ObjectId(userId),
-        "section.sectionNo": sectionNo,
-      },
-      {
-        $set: {
-          "section.$.isCompleted": true,
+        {
+          course: new ObjectId(course._id),
+          user: new ObjectId(userId),
+          "section.sectionNo": sectionNo,
         },
-      },
-      { new: true }
+        {
+          $set: {
+            "section.$.isCompleted": true,
+          },
+        },
+        { new: true }
     );
 
     // if (enrollment.completedSections.length <= sectionId) {

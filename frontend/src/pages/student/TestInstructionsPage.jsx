@@ -7,6 +7,7 @@ import {initializeQuestions, updateSelectedQuestion} from "../../store/quizSlice
 import formatTimer from "../../utils/formatTimer";
 import goFullScreen from "../../utils/goFullscreen";
 import {toast} from "react-toastify";
+import {courseContent} from "../../data/courseContent";
 
 const TestInstructionsPage = () => {
     const watermarkText = "2021IT0668"; // You can make this dynamic if needed
@@ -16,7 +17,8 @@ const TestInstructionsPage = () => {
     const intervalId = useRef(null);
     const params = useParams();
     const {courseId, sectionNumber} = params;
-
+    const isFinalQuiz = courseContent.filter(course => course.courseId === courseId)[0].sections[sectionNumber].isFinal;
+    const [isStartQuizLoading, setIsStartQuizLoading] = useState(false);
 
     useEffect(() => {
         if (timer === 0) {
@@ -62,14 +64,17 @@ const TestInstructionsPage = () => {
 
     const startTest = async () => {
         try {
-            const response = await registerSessionAPI("CS101", 1);
+            setIsStartQuizLoading(true)
+            const response = await registerSessionAPI(courseId, sectionNumber, isFinalQuiz);
             goFullScreen();
             localStorage.setItem("sessionId", response.data.session.sessionId)
-            dispatch(initializeQuestions(response.data.questions))
+            dispatch(initializeQuestions(response.data))
             dispatch(updateSelectedQuestion(0))
             navigate("/student/course/" + courseId + "/" + sectionNumber + "/quiz")
         } catch (e) {
-            toast(e.response.data.message, {type:"warning"})
+            toast(e.response.data.message, {type: "warning"})
+        } finally {
+            setIsStartQuizLoading(false)
         }
     }
 
@@ -203,9 +208,9 @@ const TestInstructionsPage = () => {
         <div className={styles.remainingTimeContainer}>
             You can start test in: <strong className={styles.remainingTimeText}>{formatTimer(timer)}</strong>
         </div>
-        <button onClick={canStartTest ? startTest : null}
+        <button onClick={canStartTest ? isStartQuizLoading ? null : startTest : null}
                 style={canStartTest ? {} : {cursor: "default"}}
-                className={`${styles.startTestButton} ${!canStartTest ? styles.disabled : ""}`}>Start Test
+                className={`${styles.startTestButton} ${!canStartTest ? styles.disabled : ""}`}>{ isStartQuizLoading ? "Loading..." : "Start Test"}
         </button>
     </div>
 }

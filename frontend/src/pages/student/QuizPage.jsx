@@ -21,6 +21,7 @@ import formatTimer from "../../utils/formatTimer";
 import goFullScreen from "../../utils/goFullscreen";
 import completeSectionAPI from "../../apis/completeSectionAPI";
 import {courseContent} from "../../data/courseContent";
+import {FaCheckCircle, FaQuestionCircle, FaTimesCircle} from "react-icons/fa";
 
 const QuizPage = () => {
     const params = useParams();
@@ -35,15 +36,24 @@ const QuizPage = () => {
     const [isFullscreenWarningVisible, setIsFullscreenWarningVisible] = useState(false);
     const [isEndTestWarningVisible, setIsEndTestWarningVisible] = useState(false)
     const navigate = useNavigate();
-    const intervalId = useRef(null);
+    const isFinalQuiz = courseContent.filter(course => course.courseId === courseId)[0].sections[sectionNumber].isFinal;
+    const questionIntervalId = useRef(null);
+    const overallIntervalId = useRef(null);
     const [timer, setTimer] = useState(questionData.time);
+    const startTime = useSelector(state => state.quiz.startTime);
+    const startTimestamp = new Date(startTime).getTime();
+    const endTimestamp = startTimestamp + 60 * 60 * 1000; // 1 hour after start time
+    const timeLeft = endTimestamp - Date.now();
+    const remainingSeconds = Math.max(0, Math.floor(timeLeft / 1000)); // Remaining time in seconds
+    const [overallTimer, setOverallTimer] = useState(remainingSeconds);
     const [isSaveButtonLoading, setIsSaveButtonLoading] = useState(false)
     const [isLoadQuestionLoading, setIsLoadQuestionLoading] = useState(false)
-    const completedSections = useSelector(state => state.courses.registeredCourses).filter(item => item.course.courseId === courseId)[0].completedSections;
+    const [isEndTestLoading, setIsEndTestLoading] = useState(false)
+    const completedSections = useSelector(state => state.courses.registeredCourses).filter(item => item.course.courseId === courseId)[0].section.filter(item => item.isCompleted);
 
 
     useEffect(() => {
-        clearInterval(intervalId.current);
+        clearInterval(questionIntervalId.current);
         setTimer(questionData.time);
     }, [selectedQuestion]);
 
@@ -53,13 +63,44 @@ const QuizPage = () => {
         }
         if (timer === 0) {
             setIsSaveButtonLoading(true)
-            clearInterval(intervalId.current);
-            answerQuestionAPI(questionData.questionId, questionData.selectedAnswers).then(res => {
+            clearInterval(questionIntervalId.current);
+            answerQuestionAPI(questionData.questionId, questionData.selectedAnswers, questionData.time).then(res => {
                 dispatch(completeQuestion({questionId: questionData.questionId}));
+            }).catch(e => {
+                toast(e.response.data.message, {type: "error"});
+            }).finally(() => {
                 setIsSaveButtonLoading(false)
             })
         }
     }, [timer]);
+
+    useEffect(() => {
+        if (overallTimer === 600) {
+            toast("Last 10 Minutes Remaining", {type: "warning"});
+        }
+        if (overallTimer === 0) {
+            setIsSaveButtonLoading(true)
+            clearInterval(overallTimer.current);
+            answerQuestionAPI(questionData.questionId, questionData.selectedAnswers, questionData.time).then(res => {
+                dispatch(completeQuestion({questionId: questionData.questionId}));
+                onEndTest()
+            }).catch(e => {
+                toast(e.response.data.message, {type: "error"});
+            }).finally(() => {
+                setIsSaveButtonLoading(false)
+            })
+        }
+    }, [overallTimer]);
+
+    useEffect(() => {
+        clearInterval(overallIntervalId.current);
+        overallIntervalId.current = setInterval(() => {
+            setOverallTimer(prev => prev - 1);
+        }, 1000);
+        return () => {
+            clearInterval(overallIntervalId.current);
+        }
+    }, []);
 
     useEffect(() => {
         // Inject the dynamic watermark content into a style tag
@@ -156,44 +197,74 @@ const QuizPage = () => {
     }, []);
 
     const startTimer = () => {
-        clearInterval(intervalId.current);
-        intervalId.current = setInterval(() => {
+        clearInterval(questionIntervalId.current);
+        questionIntervalId.current = setInterval(() => {
             setTimer(prev => prev - 1);
         }, 1000);
     }
 
     const loadQuestion = async () => {
-        setIsLoadQuestionLoading(true)
-        const response = await fetchQuestionAPI(questionData.questionId);
-        dispatch(updateQuestion(response.data.question))
-        startTimer();
-        setIsLoadQuestionLoading(false)
+        try {
+            setIsLoadQuestionLoading(true)
+            const response = await fetchQuestionAPI(questionData.questionId);
+            dispatch(updateQuestion(response.data.question))
+            startTimer();
+        } catch (e) {
+            toast(e.response.data.message, {type: "error"});
+        } finally {
+            setIsLoadQuestionLoading(false)
+        }
     }
 
     const onSaveButton = async () => {
-        clearInterval(intervalId.current);
-        if (questionData.isCompleted && selectedQuestion + 1 < quizQuestions.length) {
-            dispatch(updateSelectedQuestion(selectedQuestion + 1))
+        try {
+            clearInterval(questionIntervalId.current);
+            if (questionData.isCompleted && selectedQuestion + 1 < quizQuestions.length) {
+                dispatch(updateSelectedQuestion(selectedQuestion + 1))
+            }
+            if (questionData.selectedAnswers.length === 0 && !questionData.isCompleted) {
+                toast("Please select any option", {type: "warning"})
+                return;
+            }
+            setIsSaveButtonLoading(true);
+            await answerQuestionAPI(questionData.questionId, questionData.selectedAnswers, questionData.time - timer);
+            dispatch(completeQuestion({questionId: questionData.questionId}))
+            if (selectedQuestion + 1 < quizQuestions.length) {
+                dispatch(updateSelectedQuestion(selectedQuestion + 1))
+            } else {
+                setIsEndTestWarningVisible(true);
+            }
+        } catch (e) {
+            toast(e.response.data.message, {type: "error"});
+        } finally {
+            setIsSaveButtonLoading(false);
         }
-        if (questionData.selectedAnswers.length === 0 && !questionData.isCompleted) {
-            toast("Please select any option", {type: "warning"})
-            return;
+    }
+
+    const onEndTest = async () => {
+        try {
+            setIsEndTestLoading(true);
+            await closeSessionAPI(isFinalQuiz, 600 - overallTimer);
+            localStorage.removeItem("sessionId");
+            navigate("/student/course/" + courseId + "/" + sectionNumber + "/quiz/result")
+        } catch (e) {
+            toast(e.response.data.message, {type: "error"});
+        } finally {
+            setIsEndTestLoading(false)
         }
-        setIsSaveButtonLoading(true);
-        await answerQuestionAPI(questionData.questionId, questionData.selectedAnswers);
-        dispatch(completeQuestion({questionId: questionData.questionId}))
-        setIsSaveButtonLoading(false);
-        if (selectedQuestion + 1 < quizQuestions.length) {
-            dispatch(updateSelectedQuestion(selectedQuestion + 1))
-        } else {
-            setIsEndTestWarningVisible(true);
-        }
+
+        setTimeout(() => {
+            dispatch(clearQuiz())
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        }, 500)
     }
 
     return (<div className={styles.quizPage}>
             <div className={styles.overallTimeContainer}>
                 <h4 className={styles.timeTitle}>Time Left</h4>
-                <p className={styles.timeValue}>01:23:45</p>
+                <p className={styles.timeValue}>{formatTimer(overallTimer)}</p>
             </div>
             {isEndTestWarningVisible && (
                 <div className={styles.backdrop}>
@@ -205,15 +276,32 @@ const QuizPage = () => {
 
                         <div className={styles.summaryContainer}>
                             <h3 className={styles.summaryTitle}>Summary of Questions</h3>
-                            <div className={styles.summaryGrid}>
-                                {quizQuestions.map((question, index) => (
-                                    <div key={index}
-                                         className={`${styles.questionStatus} ${question.isCompleted ? styles.completed : styles.notCompleted}`}>
-                                        <p>Question {index + 1}</p>
-                                        <span>{question.isCompleted ? "Answered" : "Unanswered"}</span>
-                                    </div>
-                                ))}
+                            <div className={styles.summaryDataRow}>
+                                <FaQuestionCircle className={styles.icon}/>
+                                <p className={styles.summaryData}>Total Questions: <span
+                                    className={styles.summaryValue}>{quizQuestions.length}</span></p>
                             </div>
+                            <div className={styles.summaryDataRow}>
+                                <FaCheckCircle className={styles.icon}/>
+                                <p className={styles.summaryData}>Answered Questions: <span
+                                    className={styles.summaryValue}>{quizQuestions.reduce((acc, item) => item.isCompleted ? acc + 1 : acc, 0)}</span>
+                                </p>
+                            </div>
+                            <div className={styles.summaryDataRow}>
+                                <FaTimesCircle className={styles.icon}/>
+                                <p className={styles.summaryData}>Unanswered Questions: <span
+                                    className={styles.summaryValue}>{quizQuestions.reduce((acc, item) => !item.isCompleted ? acc + 1 : acc, 0)}</span>
+                                </p>
+                            </div>
+                            {/*<div className={styles.summaryGrid}>*/}
+                            {/*    {quizQuestions.map((question, index) => (*/}
+                            {/*        <div key={index}*/}
+                            {/*             className={`${styles.questionStatus} ${question.isCompleted ? styles.completed : styles.notCompleted}`}>*/}
+                            {/*            <p>Question {index + 1}</p>*/}
+                            {/*            <span>{question.isCompleted ? "Answered" : "Unanswered"}</span>*/}
+                            {/*        </div>*/}
+                            {/*    ))}*/}
+                            {/*</div>*/}
                         </div>
 
                         <p className={styles.confirmationMessage}>
@@ -224,19 +312,8 @@ const QuizPage = () => {
                             <button className={styles.cancelButton} onClick={() => setIsEndTestWarningVisible(false)}>
                                 Continue Test
                             </button>
-                            <button className={styles.endTestButton} onClick={async () => {
-                                await closeSessionAPI();
-                                localStorage.removeItem("sessionId");
-                                navigate("/student/course/" + courseId + "/" + sectionNumber + "/quiz/result")
-
-                                setTimeout(() => {
-                                    dispatch(clearQuiz())
-                                    if (document.fullscreenElement) {
-                                        document.exitFullscreen();
-                                    }
-                                }, 500)
-                            }}>
-                                End Test
+                            <button className={styles.endTestButton} onClick={isEndTestLoading ? null : onEndTest}>
+                                {isEndTestLoading ? "Loading..." : "End Test"}
                             </button>
                         </div>
                     </div>
@@ -279,12 +356,16 @@ const QuizPage = () => {
             </div>}
             <div className={styles.waterMark}/>
             <div className={styles.questionSelectorContainer}>
-                <p className={styles.questionSelectorTitle}>Questions</p>
+                <p className={styles.questionSelectorTitle}>Ques...</p>
                 <div className={styles.questionsGrid}>
                     {quizQuestions.map((question, index) => {
                         return (
                             <div
                                 onClick={() => {
+                                    if (isLoadQuestionLoading || isEndTestLoading || isSaveButtonLoading) {
+                                        toast("Please wait", {type: "warning"})
+                                        return;
+                                    }
                                     if (!questionData.isCompleted && questionData.isFetched) {
                                         toast("Please save the answer before leaving", {type: "warning"})
                                         return;

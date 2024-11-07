@@ -11,13 +11,14 @@ import CourseContentPage from "./pages/student/CourseContentPage";
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import checkAuthAPI from "./apis/checkAuthAPI";
-import TestInstructionsPage from "./components/student/TestInstructionsPage";
-import TestResultPage from "./components/student/TestResultPage";
+import TestInstructionsPage from "./pages/student/TestInstructionsPage";
+import TestResultPage from "./pages/student/TestResultPage";
 import CoursePage from "./pages/admin/CoursePage";
 import ErrorPage from "./pages/common/ErrorPage";
 import getCoursesAPI from "./apis/getCoursesAPI";
 import {updateCourses} from "./store/coursesSlice";
 import {useDispatch, useSelector} from "react-redux";
+import ForgetPasswordPage from "./pages/common/ForgetPasswordPage";
 
 const router = createBrowserRouter([
     {
@@ -30,6 +31,13 @@ const router = createBrowserRouter([
                     <LoginPage/>,
                 </>
             },
+            {
+                path: "forget-password",
+                element: <>
+                    <Nav/>
+                    <ForgetPasswordPage/>
+                </>
+            }
         ],
     },
     {
@@ -133,7 +141,7 @@ function App() {
     }, []);
 
     useEffect(() => {
-        if (localStorage.getItem("role") === "student" && registeredCourses.length === 0 && unregisteredCourses.length === 0) {
+        if (localStorage.getItem("role") === "student") {
             const fetchCourses = async () => {
                 try {
                     const response = await getCoursesAPI();

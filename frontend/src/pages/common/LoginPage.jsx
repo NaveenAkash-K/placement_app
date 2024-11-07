@@ -8,6 +8,8 @@ import {updateUserDetails} from "../../store/authSlice";
 import {toast} from "react-toastify";
 import {useDispatch} from "react-redux";
 import nav from "../../components/common/Nav";
+import getCoursesAPI from "../../apis/getCoursesAPI";
+import {updateCourses} from "../../store/coursesSlice";
 
 const LoginPage = () => {
     const [username, setUsername] = useState("");
@@ -36,7 +38,7 @@ const LoginPage = () => {
     const authenticate = async () => {
         try {
             setIsLoading(true);
-            const response = await loginAPI(username, password);
+            let response = await loginAPI(username, password);
             dispatch(updateUserDetails(response.data));
             toast("Authentication Successful", {type: "success"})
             localStorage.setItem("jwtToken", response.data.jwtToken)
@@ -44,8 +46,13 @@ const LoginPage = () => {
             localStorage.setItem("userId", response.data.userId)
             localStorage.setItem("username", response.data.name)
             localStorage.setItem("email", response.data.email)
+            if(localStorage.getItem("role") === "student"){
+                response = await getCoursesAPI()
+                dispatch(updateCourses(response.data));
+            }
             navigate("/student/home")
         } catch (e) {
+            console.log(e)
             toast("Authentication Error", {type: "error"})
         } finally {
             setIsLoading(false);
@@ -69,8 +76,10 @@ const LoginPage = () => {
                     <div className={styles.loginButton}
                          onClick={isLoading ? () => {
                          } : authenticate}
-                         label="Submit"
                     >{isLoading ? "Loading..." : "Submit"}</div>
+                    <p className={styles.forgetPassword} onClick={()=>{
+                        navigate("/auth/forget-password")
+                    }}>Forget Password</p>
                 </div>
             </div>
         </div>

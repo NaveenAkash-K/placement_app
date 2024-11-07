@@ -6,13 +6,15 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {useEffect, useLayoutEffect, useState} from "react";
+import {FiDownloadCloud} from "react-icons/fi";
+import DownloadCertificateButton from "../../components/student/DownloadCertificateButton";
 
 const CourseSectionsPage = (props) => {
     const params = useParams();
     const {courseId} = params;
     const courseData = courseContent.filter(item => item.courseId === courseId)[0];
     const registeredCourses = useSelector(state => state.courses.registeredCourses)
-    const completedSections = registeredCourses.filter(item => item.course.courseId === params.courseId)[0].completedSections;
+    const completedSections = registeredCourses.filter(item => item.course.courseId === params.courseId)[0].section.filter(item => item.isCompleted)
     const allowedSection = completedSections.length + 1;
     const navigate = useNavigate();
 
@@ -22,7 +24,11 @@ const CourseSectionsPage = (props) => {
                 <img src={flutter_image} className={styles.courseImg}/>
                 <div className={styles.detailsContainer}>
                     <h1 className={styles.nameText}>{courseData.courseName}</h1>
-                    <h2>{courseData.sections.length} Sections</h2>
+                    <div className={styles.sectionNumberAndCertificateContainer}>
+                        <h2>{courseData.sections.length} Sections</h2>
+                        { completedSections.filter(item => item).length === courseData.sections.length && <DownloadCertificateButton onClick={() => {
+                        }}/>}
+                    </div>
                     <p className={styles.aboutText}>Become a Full-Stack Web Developer with just ONE course. HTML, CSS,
                         Javascript, Node, React, PostgreSQL, Web3 and DApps Bestseller</p>
                     <div className={styles.contentsAndRequirementsContainer}>
@@ -63,11 +69,15 @@ const CourseSectionsPage = (props) => {
                                                   sectionNumber={index}
                                                   key={index}
                                                   onClick={() => {
-                                                      // if (!(allowedSection > index)) {
-                                                      //     toast("Please complete the previous sections first", {type: "warning"})
-                                                      //     return;
-                                                      // }
-                                                      navigate("/student/course/" + courseId + "/" + (index + 1) + "/quiz/instructions");
+                                                      if(completedSections[index]) {
+                                                          navigate("/student/course/" + courseId + "/" + (index) + "/quiz/result");
+                                                          return;
+                                                      }
+                                                      if (!(allowedSection > index)) {
+                                                          toast("Please complete the previous sections first", {type: "warning"})
+                                                          return;
+                                                      }
+                                                      navigate("/student/course/" + courseId + "/" + (index) + "/quiz/instructions");
                                                   }}
                         />
                     else

@@ -3,8 +3,10 @@ import {useLocation, useParams} from "react-router-dom";
 import {courseContent} from "../../data/courseContent";
 import courseCard from "../../components/student/CourseCard";
 import {useEffect, useRef, useState} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import completeSectionAPI from "../../apis/completeSectionAPI";
+import getCoursesAPI from "../../apis/getCoursesAPI";
+import {updateCourses} from "../../store/coursesSlice";
 
 const CourseContentPage = () => {
     const params = useParams();
@@ -12,23 +14,35 @@ const CourseContentPage = () => {
     const courseId = params.courseId.toUpperCase();
     const courseData = courseContent.filter(item => item.courseId === courseId)[0];
     const bottomReachedRef = useRef(false);
-    const completedSections = useSelector(state => state.courses.registeredCourses).filter(item => item.course.courseId === courseId)[0].completedSections;
+    const completedSections = useSelector(state => state.courses.registeredCourses).filter(item => item.course.courseId === courseId)[0].section.filter(item => item.isCompleted)
+                    const dispatch = useDispatch()
 
     useEffect(() => {
-        if (localStorage.getItem("role") === "student") {
-            const handleScroll = async () => {
-                const bottom =
-                    window.innerHeight + window.scrollY >= document.documentElement.scrollHeight;
-                if (bottom && !completedSections[sectionNumber] && !bottomReachedRef.current) {
-                    bottomReachedRef.current = true;
-                    await completeSectionAPI(courseId, sectionNumber)
-                }
-            };
+        const checkAndCompleteSection = async () => {
+            if (!completedSections[sectionNumber]) {
+                await completeSectionAPI(courseId, sectionNumber);
+                const response = await getCoursesAPI();
+                dispatch(updateCourses(response.data));
+            }
+        };
 
+        const handleScroll = async () => {
+            const bottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight;
+            if (bottom && !completedSections[sectionNumber] && !bottomReachedRef.current) {
+                bottomReachedRef.current = true;
+                await checkAndCompleteSection();
+            }
+        };
+
+        // Check on initial render if content height is less than viewport height
+        if (document.documentElement.scrollHeight <= window.innerHeight) {
+            checkAndCompleteSection();
+        } else {
             window.addEventListener("scroll", handleScroll);
-            return () => window.removeEventListener("scroll", handleScroll);
         }
-    }, []);
+
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [dispatch, courseId, sectionNumber, completedSections]);
 
     return <div className={styles.courseContentPage}>
         <div className={styles.header}>
