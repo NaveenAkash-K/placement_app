@@ -6,13 +6,13 @@ const Course = require("../../model/courseModel");
 const Enrollment = require("../../model/enrollmentModel");
 const User = require("../../model/userModel");
 
-router.get("/:email", async (req, res) => {
+router.get("/get-courses/:email", async (req, res) => {
   const { email } = req.params;
 
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not foundn" });
     }
 
     const enrollments = await Enrollment.find({ user: user._id }).populate(
@@ -150,5 +150,102 @@ router.patch("/enrollments", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+router.get("/attempt-requests", async (req, res) => {
+  try {
+    const enrollments = await Enrollment.find({
+      section: { $elemMatch: { isFinal: true } },
+    })
+      .populate("user", "-password")
+      .populate("course", "courseName");
+
+    const response = enrollments.flatMap((enrollment) => {
+      return enrollment.section
+        .filter(
+          (section) =>
+            section.isFinal &&
+            section.noOfAttempts >= enrollment.finalQuizAllowReattemptCount * 2
+        )
+        .map((section) => ({
+          noOfAttempts: section.noOfAttempts,
+          user: enrollment.user,
+          courseName: enrollment.course.courseName,
+        }));
+    });
+
+    return res.json(response);
+  } catch (error) {
+    console.error("Error fetching attempt requests:", error);
+    res.status(500).json({ message: "Server error fetching attempt requests" });
+  }
+});
+
+router.post("/allow-reattempt", async (req, res) => {
+  const { userId, courseId } = req.body;
+  try {
+    const course = await Course.findOne({ courseId });      
+    const enrollment = await Enrollment.findOne({ user: userId, course: course._id });
+
+    if (!enrollment) {
+      return res.status(404).json({ message: "Enrollment not found" });
+    }
+
+    enrollment.finalQuizAllowReattemptCount += 1
+
+    await enrollment.save();
+
+    return res.json({ message: "Reattempt allowed successfully", enrollment });
+  } catch (error) {
+    console.error("Error allowing reattempt:", error);
+    res.status(500).json({ message: "Server error allowing reattempt" });
+  }
+});
+
+router.post("/restart-course", async (req, res) => {
+  const { userId, courseId } = req.body;
+  try {
+    const course = await Course.findOne({ courseId });
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    const enrollment = await Enrollment.findOne({
+      user: userId,
+      course: course._id,
+    });
+    if (!enrollment) {
+      return res.status(404).json({ message: "Enrollment not found" });
+    }
+
+    enrollment.section = enrollment.section.map((section) => {
+      const quizDefaults = course.quiz.find(
+        (quiz) => quiz.sectionNo === section.sectionNo
+      );
+
+      return {
+        sectionNo: section.sectionNo,
+        isCompleted: false,
+        noOfAttempts: quizDefaults ? 0 : undefined,
+        reattemptIn: quizDefaults ? null : undefined,
+        timeTaken: quizDefaults ? null : undefined,
+        isFinal: section.isFinal || false,
+      };
+    });
+
+    enrollment.finalQuizAllowReattemptCount = 1;
+
+    await enrollment.save();
+
+    return res.json({
+      message: "Course restarted successfully",
+      enrollment,
+    });
+  } catch (error) {
+    console.error("Error restarting course:", error);
+    return res.status(500).json({ message: "Server error restarting course" });
+  }
+});
+
+
 
 module.exports = router;

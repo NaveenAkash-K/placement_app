@@ -110,14 +110,11 @@ router.post("/forgotPassword", async (req, res) => {
 router.get("/resetPassword/:token", async (req, res) => {
   try {
     const { token } = req.params;
-
     const resetToken = await PasswordResetToken.findOne({ token });
 
     if (!resetToken) {
       return res.status(400).json({ message: "Invalid or expired token" });
     }
-
-    await PasswordResetToken.findByIdAndDelete(resetToken._id);
 
     res
       .status(200)
@@ -130,11 +127,17 @@ router.get("/resetPassword/:token", async (req, res) => {
 
 router.post("/updatePassword", async (req, res) => {
   try {
-    const { email, currentPassword, newPassword } = req.body;
+    const { email, currentPassword, newPassword, token } = req.body;
 
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    const resetToken = await PasswordResetToken.findOne({ token });
+
+    if (!resetToken) {
+      return res.status(400).json({ message: "Invalid or expired token" });
     }
 
     const isValidPassword = await bcrypt.compare(
@@ -155,6 +158,8 @@ router.post("/updatePassword", async (req, res) => {
         message: "New password cannot be the same as the current password",
       });
     }
+
+    await PasswordResetToken.findByIdAndDelete(resetToken._id);
 
     res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
