@@ -95,7 +95,9 @@ router.post("/new-questions", async (req, res) => {
     console.log(requestedSection.reattemptIn != null);
     if (
       requestedSection.noOfAttempts < 2 ||
-      (requestedSection.reattemptIn < Date.now() && !isFinal)
+      (requestedSection.reattemptIn < Date.now() && !isFinal) ||
+      (isFinal &&
+        enrollment.finalQuizAllowReattemptCount * 2 > quiz.noOfAttempts)
     ) {
       const previousSessions = await Session.find({
         userId: userId,
@@ -173,6 +175,11 @@ router.post("/new-questions", async (req, res) => {
           "You are allowed to reattend the quiz on " +
           requestedSection.reattemptIn,
       });
+    // } else if (
+    //   isFinal &&
+    //   enrollment.finalQuizAllowReattemptCount * 2 >= quiz.noOfAttempts
+    // ) {
+    //   return res.json({ message: ""})
     } else {
       return res
         .status(403)

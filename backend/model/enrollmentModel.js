@@ -40,6 +40,10 @@
         },
       },
     ],
+    finalQuizAllowReattemptCount: {
+      type: Number,
+      default: 1,
+    },
   });
 
 
