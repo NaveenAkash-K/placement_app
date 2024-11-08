@@ -14,14 +14,14 @@ getStatsAPI
     },
 }
 
-getAttemptRequestsAPI
-revokeCourseAPI
-allowAttemptAPI
+Done:
+    -getAttemptRequestsAPI
+    -revokeCourseAPI
+    -allowAttemptAPI
+    -getEnrolledStudents
+-   -getCertificatesObtained
 
 courseId to lowercase
-
-getEnrolledStudents
-getCertificatesObtained
 
 getCompletedQuizDetails
 {

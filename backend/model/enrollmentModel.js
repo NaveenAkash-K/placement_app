@@ -32,6 +32,10 @@
           type: Boolean,
           default: false,
         },
+        score: {
+          type: Number,
+          default: 0,
+        },
         isFinal: {
           type: Boolean,
         },
@@ -44,6 +48,10 @@
       type: Number,
       default: 1,
     },
+    finalQuizScore: {
+      type: Number,
+      default: 0,
+    }
   });
 
 

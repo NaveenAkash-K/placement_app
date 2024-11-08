@@ -90,7 +90,7 @@ router.post("/new-questions", async (req, res) => {
     // TODO: Decide whether to keep the no of attempts in env
     console.log(
       requestedSection.noOfAttempts < 2 ||
-        (requestedSection.reattemptIn < Date.now() && !isFinal)
+      (requestedSection.reattemptIn < Date.now() && !isFinal)
     );
     console.log(requestedSection.reattemptIn != null);
     if (
@@ -175,11 +175,11 @@ router.post("/new-questions", async (req, res) => {
           "You are allowed to reattend the quiz on " +
           requestedSection.reattemptIn,
       });
-    // } else if (
-    //   isFinal &&
-    //   enrollment.finalQuizAllowReattemptCount * 2 >= quiz.noOfAttempts
-    // ) {
-    //   return res.json({ message: ""})
+      // } else if (
+      //   isFinal &&
+      //   enrollment.finalQuizAllowReattemptCount * 2 >= quiz.noOfAttempts
+      // ) {
+      //   return res.json({ message: ""})
     } else {
       return res
         .status(403)
@@ -313,7 +313,7 @@ router.patch("/tab-switch", async (req, res) => {
 });
 
 router.post("/calculate-result", async (req, res) => {
-  const { userId, courseId, sectionNo } = req.body;
+  const { userId, courseId, sectionNo, isFinal } = req.body;
 
   try {
     const sessions = await Session.find({
@@ -332,6 +332,36 @@ router.post("/calculate-result", async (req, res) => {
       sessionId: session.sessionId,
       ...session.result,
     }));
+
+  
+    if (isFinal) {
+      const course = await Course.findOne({ courseId })
+      const enrollment = await Enrollment.findOne({ user: userId, course: course._id });
+      if (!enrollment) {
+        return res.status(404).json({ message: "Enrollment not found for this user and course." });
+      }
+      const hasPassedFinal = enrollment.section.some(section => section.isFinal && section.isCompleted);
+      console.log(enrollment);
+
+      if(hasPassedFinal) {
+        let finalQuizScore = 0;
+        let otherQuizScores = 0;
+
+        enrollment.section.forEach((section) => {
+          if (section.isCompleted && section.score != 0) {
+            if (section.isFinal) {
+              finalQuizScore = score;
+            } else {
+              otherQuizScores += score;
+            }
+          }
+        });
+
+        const quizScore = (finalQuizScore * 0.6) + ((otherQuizScores / (enrollment.section.length - 1)) * 0.4);
+        enrollment.finalQuizScore = quizScore
+        await enrollment.save()
+      }
+    }
 
     res.json({
       courseId,
@@ -404,10 +434,11 @@ router.post("/close-session", async (req, res) => {
 
     const attendedSection = enrollment.section.find((section) => section.sectionNo === session.sectionNo)
     attendedSection.noOfAttempts++;
-    if(!hasPassed && attendedSection.noOfAttempts >= 2 && !isFinal){
+    if (!hasPassed && attendedSection.noOfAttempts >= 2 && !isFinal) {
       attendedSection.reattemptIn = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    } else if(hasPassed){
+    } else if (hasPassed) {
       attendedSection.isCompleted = true
+      attendedSection.score = scorePercentage 
     }
 
     await enrollment.save();
