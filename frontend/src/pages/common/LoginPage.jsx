@@ -3,14 +3,14 @@ import Nav from "../../components/common/Nav";
 import CustomTextInput from "../../components/common/CustomTextInput";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import loginAPI from "../../apis/loginAPI";
+import loginAPI from "../../apis/common/loginAPI";
 import {updateUserDetails} from "../../store/authSlice";
 import {toast} from "react-toastify";
 import {useDispatch} from "react-redux";
 import nav from "../../components/common/Nav";
-import getCoursesAPI from "../../apis/getCoursesAPI";
+import getCoursesAPI from "../../apis/student/getCoursesAPI";
 import {updateCourses} from "../../store/coursesSlice";
-import forgetPasswordAPI from "../../apis/forgetPasswordAPI";
+import forgetPasswordAPI from "../../apis/common/forgetPasswordAPI";
 
 const LoginPage = () => {
     const [username, setUsername] = useState("");

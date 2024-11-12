@@ -1,12 +1,12 @@
 import styles from "./testResultPage.module.css";
 import {IoMdCheckmarkCircleOutline, IoMdCloseCircleOutline} from "react-icons/io";
 import {useEffect, useLayoutEffect, useState} from "react";
-import calculateResult from "../../apis/calculateResult";
+import calculateResult from "../../apis/student/calculateResult";
 import {useParams} from "react-router-dom";
-import completeSectionAPI from "../../apis/completeSectionAPI";
+import completeSectionAPI from "../../apis/student/completeSectionAPI";
 import {courseContent} from "../../data/courseContent";
 import DownloadCertificateButton from "../../components/student/DownloadCertificateButton";
-import getCoursesAPI from "../../apis/getCoursesAPI";
+import getCoursesAPI from "../../apis/student/getCoursesAPI";
 import {updateCourses} from "../../store/coursesSlice";
 import {useDispatch} from "react-redux";
 import {completeSection} from "../../store/coursesSlice";

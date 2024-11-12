@@ -4,8 +4,8 @@ import {courseContent} from "../../data/courseContent";
 import courseCard from "../../components/student/CourseCard";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import completeSectionAPI from "../../apis/completeSectionAPI";
-import getCoursesAPI from "../../apis/getCoursesAPI";
+import completeSectionAPI from "../../apis/student/completeSectionAPI";
+import getCoursesAPI from "../../apis/student/getCoursesAPI";
 import {updateCourses} from "../../store/coursesSlice";
 
 const CourseContentPage = () => {

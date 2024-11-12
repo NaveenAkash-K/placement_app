@@ -4,7 +4,7 @@ const closeSessionAPI = async (isFinal, timeTaken) => {
     try {
         return await axios.post(process.env.REACT_APP_BACKEND_URI + "/quiz/close-session", {
                 sessionId: localStorage.getItem("sessionId"),
-                userId: "671598ea1aa659de63af9c64",
+                userId: localStorage.getItem("userId"),
                 timeTaken,
                 isFinal
             },

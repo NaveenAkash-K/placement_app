@@ -25,8 +25,9 @@ router.get("/enrolledStudents/:courseId", async (req, res) => {
   }
 });
 
-router.get('/certificates-obtained', async (req, res) => {
+router.get('/certificates-obtained/:courseId', async (req, res) => {
   try {
+    const { courseId } = req.params
     const enrollments = await Enrollment.find({
       "section": {
         $elemMatch: {
@@ -47,8 +48,9 @@ router.get('/certificates-obtained', async (req, res) => {
   }
 });
 
-router.get("/attempt-requests", async (req, res) => {
+router.get("/attempt-requests/:courseId", async (req, res) => {
   try {
+    const { courseId } = req.params
     const enrollments = await Enrollment.find({
       section: { $elemMatch: { isFinal: true } },
     })

@@ -2,7 +2,7 @@ import styles from "./testInstructionsPage.module.css"
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useRef, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import registerSessionAPI from "../../apis/registerSessionAPI";
+import registerSessionAPI from "../../apis/student/registerSessionAPI";
 import {initializeQuestions, updateSelectedQuestion} from "../../store/quizSlice";
 import formatTimer from "../../utils/formatTimer";
 import goFullScreen from "../../utils/goFullscreen";

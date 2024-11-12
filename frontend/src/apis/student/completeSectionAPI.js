@@ -5,7 +5,7 @@ const completeSectionAPI = async (courseId, sectionNo) => {
         return await axios.patch(process.env.REACT_APP_BACKEND_URI + "/course/enrollments", {
             courseId: courseId,
             sectionNo: parseInt(sectionNo) + 1,
-            userId: "671598ea1aa659de63af9c64",
+            userId: localStorage.getItem("userId"),
         }, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("jwtToken")}`
