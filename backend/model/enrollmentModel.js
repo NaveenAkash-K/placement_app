@@ -48,6 +48,10 @@
       type: Number,
       default: 1,
     },
+    failureReason: {
+      type: String,
+      default: null,
+    },
     finalQuizScore: {
       type: Number,
       default: 0,

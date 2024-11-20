@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../../model/userModel");
 const Enrollment = require("../../model/enrollmentModel");
 const Course = require("../../model/courseModel")
+const Session = require("../../model/sessionModel");
 
 router.get("/students", async (req, res) => {
   try {
@@ -15,17 +16,40 @@ router.get("/students", async (req, res) => {
 });
 
 router.get("/enrolledStudents/:courseId", async (req, res) => {
-  try { 
-    const { courseId } = req.params
-    const course = await Course.findOne({ courseId });
-    const enrolledStudents = await Enrollment.find({ course: course._id });
-    return res.status(200).json({ enrolledStudents });
-  } catch (error) {
-    res.status(500).json({ "message": "Internal Server Error", e });
-  }
+ try {
+   const { courseId } = req.params;
+
+   const course = await Course.findOne({ courseId });
+   if (!course) {
+     return res.status(404).json({ message: "Course not found" });
+   }
+
+   const enrollments = await Enrollment.find({ course: course._id }).populate(
+     "user"
+   );
+
+   const enrolledStudents = enrollments.map((enrollment) => {
+     const student = enrollment.user;
+     return {
+       name: student.name,
+       dept: student.department,
+       regNo: student.regNo,
+       progress: {
+         courseId: course.courseId,
+         section: enrollment.section,
+       },
+     };
+   });
+
+   return res.status(200).json(enrolledStudents);
+ } catch (error) {
+   console.error(error);
+   res.status(500).json({ message: "Internal Server Error", error });
+ }
 });
 
-router.get('/certificates-obtained', async (req, res) => {
+router.get('/certificates-obtained/:courseId', async (req, res) => {
+  const { courseId } = req.params;
   try {
     const enrollments = await Enrollment.find({
       "section": {
@@ -34,11 +58,24 @@ router.get('/certificates-obtained', async (req, res) => {
           isCompleted: true
         }
       }
-    }).populate('user');
-    const result = enrollments.map(enrollment => ({
-      enrollment,
-      user: enrollment.user
-    }));
+    }).populate('user course');
+      const result = await Promise.all(
+        enrollments.map(async (enrollment) => {
+          const finalSession = await Session.findOne({
+            userId: enrollment.user._id,
+            courseId: enrollment.course.courseId,
+            isFinal: true,
+          });
+
+          return {
+            name: enrollment.user.name,
+            dept: enrollment.user.department,
+            regNo: enrollment.user.regNo,
+            score: finalSession ? finalSession.result.scorePercentage : null,
+          };
+        })
+      );
+
 
     res.status(200).json(result);
   } catch (error) {
@@ -64,7 +101,12 @@ router.get("/attempt-requests", async (req, res) => {
         )
         .map((section) => ({
           noOfAttempts: section.noOfAttempts,
-          user: enrollment.user,
+          tabSwitchCount: enrollment.tabSwitchCount,
+          failureReason: enrollment.failureReason,
+          user: enrollment.user.name,
+          dept: enrollment.user.department,
+          regNo: enrollment.user.regNo,
+          score: enrollment.finalQuizScore,
           courseName: enrollment.course.courseName,
         }));
     });

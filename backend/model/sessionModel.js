@@ -19,6 +19,7 @@ const sessionSchema = new Schema({
     type: Number,
     required: true,
   },
+  isFinal: Boolean,
   questions: [
     {
       question: {
