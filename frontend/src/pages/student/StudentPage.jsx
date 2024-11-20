@@ -6,7 +6,7 @@ import {useEffect, useLayoutEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {updateCourses} from "../../store/coursesSlice";
-import getCoursesAPI from "../../apis/getCoursesAPI";
+import getCoursesAPI from "../../apis/student/getCoursesAPI";
 import {courseContent} from "../../data/courseContent";
 
 const StudentPage = () => {

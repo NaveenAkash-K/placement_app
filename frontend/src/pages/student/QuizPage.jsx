@@ -9,17 +9,17 @@ import {
     updateQuestion,
     updateSelectedQuestion
 } from "../../store/quizSlice";
-import fetchQuestionAPI from "../../apis/fetchQuestionAPI";
-import loginAPI from "../../apis/loginAPI";
-import answerQuestionAPI from "../../apis/answerQuestionAPI";
-import tabSwitchAPI from "../../apis/tabSwitchAPI";
-import closeSessionAPI from "../../apis/closeSessionAPI";
+import fetchQuestionAPI from "../../apis/student/fetchQuestionAPI";
+import loginAPI from "../../apis/common/loginAPI";
+import answerQuestionAPI from "../../apis/student/answerQuestionAPI";
+import tabSwitchAPI from "../../apis/student/tabSwitchAPI";
+import closeSessionAPI from "../../apis/student/closeSessionAPI";
 import {useNavigate, useParams} from "react-router-dom";
 import {IoMdCheckmarkCircleOutline} from "react-icons/io";
 import {toast} from "react-toastify";
 import formatTimer from "../../utils/formatTimer";
 import goFullScreen from "../../utils/goFullscreen";
-import completeSectionAPI from "../../apis/completeSectionAPI";
+import completeSectionAPI from "../../apis/student/completeSectionAPI";
 import {courseContent} from "../../data/courseContent";
 import {FaCheckCircle, FaQuestionCircle, FaTimesCircle} from "react-icons/fa";
 

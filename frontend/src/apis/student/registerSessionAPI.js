@@ -5,7 +5,7 @@ const registerSessionAPI = async (courseId, sectionNo, isFinal) => {
         return await axios.post(process.env.REACT_APP_BACKEND_URI + "/quiz/new-questions", {
             courseId,
             sectionNo: parseInt(sectionNo) + 1,
-            userId: "671598ea1aa659de63af9c64",
+            userId: localStorage.getItem("userId"),
             isFinal
         },
             {

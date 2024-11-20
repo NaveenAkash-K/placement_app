@@ -4,8 +4,8 @@ import styles from "./forgetPasswordPage.module.css";
 import CustomTextInput from "../../components/common/CustomTextInput";
 import {toast} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
-import verifyForgetPasswordTokenAPI from "../../apis/verifyForgetPasswordTokenAPI";
-import updatePasswordAPI from "../../apis/updatePasswordAPI";
+import verifyForgetPasswordTokenAPI from "../../apis/common/verifyForgetPasswordTokenAPI";
+import updatePasswordAPI from "../../apis/common/updatePasswordAPI";
 
 const ForgetPasswordPage = () => {
     const [newPassword, setNewPassword] = useState("");

@@ -2,8 +2,8 @@ import styles from "./courseDetailsOverlay.module.css"
 import flutter_image from "../../assets/images/flutter_course.png"
 import {courseContent} from "../../data/courseContent";
 import {useState} from "react";
-import registerCourseAPI from "../../apis/registerCourseAPI";
-import getCoursesAPI from "../../apis/getCoursesAPI";
+import registerCourseAPI from "../../apis/student/registerCourseAPI";
+import getCoursesAPI from "../../apis/student/getCoursesAPI";
 import {useDispatch} from "react-redux";
 import {updateCourses} from "../../store/coursesSlice";
 import {toast} from "react-toastify";
