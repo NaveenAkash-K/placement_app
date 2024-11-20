@@ -48,8 +48,9 @@ router.get("/enrolledStudents/:courseId", async (req, res) => {
  }
 });
 
-router.get('/certificates-obtained/:courseId/:courseId', async (req, res) => {
+router.get('/certificates-obtained/:courseId', async (req, res) => {
   const { courseId } = req.params;
+router.get('/certificates-obtained/:courseId', async (req, res) => {
   try {
     const { courseId } = req.params
     const enrollments = await Enrollment.find({
