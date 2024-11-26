@@ -40,9 +40,9 @@ function generateFingerprint(req) {
 }
 
 router.post("/new-questions", async (req, res) => {
-  const { courseId, sectionNo, userId, isFinal } = req.body;
+  const { courseId, sectionNo, isFinal } = req.body;
   // isFinal may not be needed here as we are gonna set the reattempt in only if it is not the final quiz, but just in case
-
+    const userId = "671598ea1aa659de63af9c64";
   try {
     const course = await Course.findOne({ courseId });
     const enrollment = await Enrollment.findOne({
@@ -313,7 +313,8 @@ router.patch("/tab-switch", async (req, res) => {
 });
 
 router.post("/calculate-result", async (req, res) => {
-  const { userId, courseId, sectionNo, isFinal } = req.body;
+  const { courseId, sectionNo, isFinal } = req.body;
+    const userId = "671598ea1aa659de63af9c64";
 
   try {
     const sessions = await Session.find({
@@ -375,8 +376,8 @@ router.post("/calculate-result", async (req, res) => {
 });
 
 router.post("/close-session", async (req, res) => {
-  const { sessionId, timeTaken, isFinal, userId } = req.body;
-
+  const { sessionId, timeTaken, isFinal } = req.body;
+    const userId = "671598ea1aa659de63af9c64";
   try {
     const session = await Session.findOneAndUpdate(
       { sessionId },
