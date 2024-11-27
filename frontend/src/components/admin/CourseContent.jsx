@@ -9,7 +9,7 @@ import {useSelector} from "react-redux";
 const CourseContent = () => {
     const params = useParams();
     // const {courseId} = params;
-    const courseId = "CS101";
+    const courseId = params.courseId;
     const courseData = courseContent.filter(item => item.courseId === courseId)[0];
     const navigate = useNavigate();
 

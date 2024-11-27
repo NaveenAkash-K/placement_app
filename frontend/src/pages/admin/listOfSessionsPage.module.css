@@ -1,0 +1,89 @@
+/* Container for the entire page */
+.listOfSessionsPage {
+    padding: 2rem;
+    background-color: #f3f4f6; /* Subtle gray background */
+    min-height: 100vh;
+    font-family: "Arial", sans-serif;
+}
+
+/* Title styling */
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    color: #2c3e50; /* Dark blue for emphasis */
+    margin-bottom: 2rem;
+}
+
+/* Grid container for session cards */
+.sessionsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 1.5rem;
+    padding: 0 1rem;
+}
+
+/* Individual session card */
+.sessionCard {
+    cursor: pointer;
+    background: linear-gradient(135deg, #ffffff, #f9fafb);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.sessionCard:hover {
+    transform: translateY(-5px); /* Slight lift effect */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Header styling for the card */
+.cardHeader {
+    margin-bottom: 1rem;
+}
+
+.cardHeader h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #34495e;
+    margin-bottom: 0.5rem;
+}
+
+.cardHeader p {
+    font-size: 0.9rem;
+    color: #7f8c8d; /* Light gray for contrast */
+    word-break: break-all;
+}
+
+/* Body of the card for session details */
+.cardBody {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.infoRow {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+/* Highlight for tab switches */
+.tabSwitchCount {
+    color: #e74c3c; /* Red for emphasis */
+    font-weight: bold;
+}
+
+/* Status badges */
+.statusPassed {
+    color: #27ae60; /* Green for passed */
+    font-weight: bold;
+}
+
+.statusFailed {
+    color: #e74c3c; /* Red for failed */
+    font-weight: bold;
+}
