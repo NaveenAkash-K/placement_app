@@ -1,0 +1,226 @@
+/* General container styles */
+.sessionAnswersPage {
+    padding: 2rem;
+    background-color: #f7f8fc; /* Light gray background */
+    font-family: "Arial", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Title styling */
+.title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #2c3e50; /* Dark blue */
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* Legend */
+.legend {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    justify-content: center;
+    align-items: center;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.correctAndSelected {
+    background-color: #27ae60; /* Green background */
+    color: #fff;
+    border: 2px solid #1e8449;
+}
+
+.correctNotSelected {
+    background-color: #e9f7ef; /* Light green background */
+    color: #27ae60; /* Green text */
+    border: 2px solid #27ae60;
+}
+
+.incorrectSelected {
+    background-color: #f8d7da; /* Light red background */
+    color: #e74c3c; /* Red text */
+    border: 2px solid #e74c3c;
+}
+
+.unselectedOption {
+    background-color: #f9f9f9; /* Neutral light gray */
+    color: #7f8c8d;
+    border: 2px solid transparent;
+}
+
+/* Summary container */
+.summaryContainer {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    width: 90%;
+    max-width: 800px;
+}
+
+.summaryDetails {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    text-align: center;
+}
+
+.summaryDetails div {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.summaryDetails p {
+    font-size: 1rem;
+    color: #7f8c8d;
+    margin-bottom: 0.5rem;
+}
+
+.summaryDetails span {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.statusPassed {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.statusFailed {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+/* Section headers */
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #34495e;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #eceff1;
+    padding-bottom: 0.5rem;
+}
+
+/* Questions container */
+.questionsContainer {
+    width: 90%;
+    max-width: 800px;
+    margin-bottom: 2rem;
+}
+
+/* Question card */
+.questionCard {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.questionHeader {
+    margin-bottom: 1rem;
+}
+
+.questionHeader h4 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+/* Options container */
+.optionsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Option styles */
+.option {
+    padding: 0.8rem;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    position: relative;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.correctAndSelected {
+    background-color: #27ae60; /* Green background */
+    color: #fff;
+    border: 2px solid #1e8449; /* Darker green border */
+    font-weight: bold;
+}
+
+.correctNotSelected {
+    background-color: #e9f7ef; /* Light green background */
+    color: #27ae60; /* Green text */
+    border: 2px solid #27ae60;
+}
+
+.incorrectSelected {
+    background-color: #f8d7da; /* Light red background */
+    color: #e74c3c; /* Red text */
+    border: 2px solid #e74c3c; /* Red border */
+    font-weight: bold;
+}
+
+.unselectedOption {
+    background-color: #f9f9f9; /* Neutral light gray */
+    color: #7f8c8d; /* Muted gray text */
+    border: 2px solid transparent; /* No border */
+}
+
+/* Icon styles */
+.correctIcon {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-left: 0.5rem;
+}
+
+.incorrectIcon {
+    font-size: 1.2rem;
+    color: #e74c3c;
+    margin-left: 0.5rem;
+}
+
+/* Answer text */
+.answersContainer p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+}
+
+.correctText {
+    color: #27ae60; /* Green for correct text */
+    font-weight: bold;
+}
+
+.incorrectText {
+    color: #e74c3c; /* Red for incorrect text */
+    font-weight: bold;
+}

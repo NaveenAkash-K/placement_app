@@ -19,6 +19,8 @@ import getCoursesAPI from "./apis/student/getCoursesAPI";
 import {updateCourses} from "./store/coursesSlice";
 import {useDispatch, useSelector} from "react-redux";
 import ForgetPasswordPage from "./pages/common/ForgetPasswordPage";
+import ListOfSessionsPage from "./pages/admin/ListOfSessionsPage";
+import SessionAnswersPage from "./pages/admin/SessionAnswersPage";
 
 const router = createBrowserRouter([
     {
@@ -112,6 +114,21 @@ const router = createBrowserRouter([
                     <CourseContentPage/>
                 </>
             },
+            {
+                path: "course/:courseId/:studentId/sessions",
+                element: <>
+                    <Nav/>
+                    <ListOfSessionsPage/>
+                </>
+            },
+            {
+                path: "course/:courseId/:studentId/session/:sessionId/answers",
+                element: <>
+                    <Nav/>
+                    <SessionAnswersPage/>
+                </>
+            }
+
         ]
     },
 ]);

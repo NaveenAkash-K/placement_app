@@ -4,6 +4,7 @@ import EditCourseCard from "../../components/admin/EditCourseCard";
 import {PieChart} from "@mui/x-charts/PieChart"
 import {useEffect, useLayoutEffect} from "react";
 import {useNavigate} from "react-router-dom";
+import {courseContent} from "../../data/courseContent";
 
 
 const AdminPage = () => {
@@ -74,11 +75,7 @@ const AdminPage = () => {
             <h1 className={styles.coursesText}>Courses</h1>
         </div>
         <div className={styles.editCourseCardGrid}>
-            <EditCourseCard/>
-            <EditCourseCard/>
-            <EditCourseCard/>
-            <EditCourseCard/>
-            <EditCourseCard/>
+            {courseContent.map(course => <EditCourseCard course={course}/>)}
         </div>
     </div>
 }

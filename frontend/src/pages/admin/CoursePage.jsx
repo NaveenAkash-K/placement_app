@@ -22,7 +22,7 @@ const CoursePage = () => {
                 setIsLoading(true)
                 let response;
                 response = await getEnrolledStudentsAPI(courseId.toUpperCase())
-                setEnrolledStudentsData(response.data.enrolledStudents);
+                setEnrolledStudentsData(response.data);
                 response = await getCertificatesObtained(courseId.toUpperCase())
                 setCertificatesObtained(response.data);
                 response = await getAttemptRequestsAPI(courseId.toUpperCase());
