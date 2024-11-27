@@ -185,4 +185,26 @@ router.post("/restart-course", async (req, res) => {
   }
 });
 
+router.get("/session/:sessionId", async(req, res) => {
+  try {
+    const sessionId = req.params.sessionId;
+
+    const session = await Session.findOne({ sessionId })
+      .select("result questions")
+      .populate(
+        "questions.question",
+        "question options answer userAnswwer timeTaken"
+      ).lean();
+      
+    if (!session) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+
+    res.status(200).json(session);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal Server error" });
+  }
+});
+
 module.exports = router;
