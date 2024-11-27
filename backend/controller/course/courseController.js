@@ -107,13 +107,13 @@ router.delete("/enrollments", async (req, res) => {
 });
 
 router.patch("/enrollments", async (req, res) => {
-  const { courseId, sectionNo, userId } = req.body;
+  const { courseId, sectionNo } = req.body;
 
   try {
     const course = await Course.findOne({ courseId });
     console.log(course);
 
-
+    const userId = "671598ea1aa659de63af9c64";
     const enrollment = await Enrollment.findOneAndUpdate(
         {
           course: new ObjectId(course._id),
