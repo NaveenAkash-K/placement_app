@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const crypto = require("crypto");
 const { ObjectId } = mongoose.Types;
 const { v4: uuidv4 } = require("uuid");
+const nodemailer = require("nodemailer");
 const Question = require("../../model/questionModel");
 const User = require("../../model/userModel");
 const Session = require("../../model/sessionModel");
@@ -12,6 +13,8 @@ const Enrollment = require("../../model/enrollmentModel");
 const { validate } = require("../../model/courseModel");
 const { log } = require("console");
 const { userInfo } = require("os");
+require('dotenv').config()
+const path = require('path')
 
 const shuffleArray = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -412,7 +415,9 @@ router.post("/close-session", async (req, res) => {
 
     const scorePercentage = (correctAnswers / noOfQuestions) * 100;
     const hasPassed = scorePercentage >= cutOff;
-
+    if(isFinal){
+      await sendCertificate(userId, course.courseName)
+    }
     session.result = {
       correctAnswers,
       totalQuestions: noOfQuestions,
@@ -453,5 +458,48 @@ router.post("/close-session", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+async function sendCertificate(userId, courseName) {
+  try {
+    const user = await User.findById(userId);
+    if (!user || !user.email) {
+      console.error("User email not found.");
+      return;
+    }
+
+    const certificatePath = path.join(
+      __dirname,
+      "../../assets",
+      "cert.pdf"
+    );
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: user.email,
+      subject: "Your Course Completion Certificate",
+      text: `Dear ${user.name},\n\nCongratulations on completing the ${courseName} course! Please find your certificate attached.\n\nBest regards,\nYour Team`,
+      attachments: [
+        {
+          filename: "certificate.pdf",
+          path: certificatePath,
+        },
+      ],
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+    console.log("Certificate sent successfully to:", user.email);
+  } catch (error) {
+    console.error("Error sending certificate:", error);
+  }
+}
 
 module.exports = router;
